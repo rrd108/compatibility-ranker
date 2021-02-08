@@ -14,11 +14,11 @@
 
     <div>
       <section v-for="partner in possiblePartners" :key="partner.id">
-        <h2>{{partner.name}}</h2>
+        <h2>{{partner.name}}  <font-awesome-icon icon="link" @click="personId = partner.id;getAnalysis()" /></h2>
         <h3>{{partner.birth_date}}</h3>
         <ul>
           <li><span>{{parseInt(partner.points / maxPoints * 100)}}%</span> ({{partner.points}} points)</li>
-          <li :class="{inRange : inMoonRange(partner.moonPosition)}"><span>{{zodiacs[partner.moon]}}</span> Moon: {{partner.moonPosition}} {{partner.moon}}</li>
+          <li :class="{outRange : outMoonRange(partner.moonPosition)}"><span>{{zodiacs[partner.moon]}}</span> Moon: {{partner.moonPosition}} {{partner.moon}}</li>
           <li><span>{{partner.age_difference}}</span> év korkülönbség</li>
         </ul>
         <Stars :points="partner.points" />
@@ -62,8 +62,8 @@ export default {
         .catch(error => console.error(error))
 
     },
-    inMoonRange(points) {
-      return ((-11 <= points && points <= -6) || (1 <= points && points <= 6)) ? true : false
+    outMoonRange(points) {
+      return ((-11 <= points && points <= -6) || (1 <= points && points <= 6)) ? false : true
     }
   }
 }
