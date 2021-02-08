@@ -26,7 +26,7 @@ if (isset($_GET['names'])) {
 }
 
 if ($_GET['analysis']) {
-  $zodiacs = ['Aires', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Saggitarius', 'Capricorn', 'Aquarius', 'Pisces'];
+  $zodiacs = ['Aires', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
 
   $chart = file_get_contents('../data/chart.json');
   $chart = json_decode($chart);
