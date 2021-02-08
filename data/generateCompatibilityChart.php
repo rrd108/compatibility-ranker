@@ -18,7 +18,7 @@ $naksatras = $chart = [];
 $line = 0;
 
 // create a total matrix
-if (($handle = fopen('naksatras.csv', 'r')) !== FALSE) {
+if (($handle = fopen('nakshatras.csv', 'r')) !== FALSE) {
   while (($rowDdata = fgetcsv($handle, 1000, ';')) !== FALSE) {
 
     // 0. row is the zodiacs, we do not need it
