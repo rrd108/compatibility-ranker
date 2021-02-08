@@ -1,6 +1,6 @@
 <template>
   <div>
-    <font-awesome-icon icon="star" v-for="i in stars" :key="i" />
+    <font-awesome-icon icon="heart" v-for="i in stars" :key="i" />
   </div>
 </template>
 
@@ -21,4 +21,9 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+.svg-inline--fa {
+  margin: 0 0.2rem;
+  color: #d64933;
+}
+</style>

@@ -71,7 +71,7 @@ export default {
 
 <style scoped>
 article {
-  background-color: #89bd9e;
+  background-color: #58a4b0;
   margin: 1rem;
   padding: 1rem;
   text-align: center;
@@ -80,7 +80,8 @@ section {
   margin: 1rem;
   padding: 1rem;
   text-align: center;
-  background-color: #db4c40;
+  background-color: #f5ee9e;
+  color: #000;
 }
 ul {
   list-style: none;
@@ -90,18 +91,17 @@ ul {
   margin: 1rem;
 }
 li {
-  background-color: #f0c987;
-  color: #000;
+  background-color: #0c7c59;
   padding: 1rem;
   margin: 1rem 0;
+  color: #fff;
 }
 span {
   font-size: 4rem;
   display: block;
   width: 20vw;
 }
-.inRange {
-  background-color: #89bd9e;
-  color: #fff;
+.outRange {
+  background-color: #d64933;
 }
 </style>

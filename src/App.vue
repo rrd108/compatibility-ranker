@@ -1,7 +1,6 @@
 <template>
   <div>
     <header>
-      <font-awesome-icon icon="heart" />
       <h1>Compatibility Ranker</h1>
     </header>
 
@@ -29,19 +28,15 @@ export default {
 }
 body {
   font-family: 'Quicksand', sans-serif;
-  background-color: #8B1E3F;
+  background-color: #484349;
   color: #fff;
 }
 header {
   display: flex;
   justify-content: space-evenly;
   padding: 1rem;
-  background-color: #3c153b;
-  color: #fff;
-}
-header .svg-inline--fa {
-  font-size: 5rem;
-  margin: 0 1rem;
+  background-color: #f5ee9e;
+  color: #000;
 }
 main {
   padding: 1rem;
