@@ -61,22 +61,21 @@ if ($_GET['analysis']) {
             $possiblePartners[$i]['points'] = $points->point;
           }
         }
-        // TODO check this
         if ($sex == 'boy') {
           if ($points->girl == $possiblePartner['naksatra'] && $points->boy == $person['naksatra']) {
             $possiblePartners[$i]['points'] = $points->point;
           }
         }
 
-        // moon position 1 <= (girlMoonPosition - boyMoonPosition) <= 6
         $personMoonPosition = array_search($person['moon'], $zodiacs);
         $possiblePartnerMoonPosition = array_search($possiblePartner['moon'], $zodiacs);
         if ($sex == 'girl') {
-          $possiblePartners[$i]['moonPosition'] = $personMoonPosition - $possiblePartnerMoonPosition;
+          $moonPositionDifference = $personMoonPosition - $possiblePartnerMoonPosition;
         }
         if ($sex == 'boy') {
-          $possiblePartners[$i]['moonPosition'] = $possiblePartnerMoonPosition - $personMoonPosition;
+          $moonPositionDifference =  $possiblePartnerMoonPosition - $personMoonPosition;
         }
+        $possiblePartners[$i]['stridirgha'] = $moonPositionDifference > 0 ? $moonPositionDifference : 12 + $moonPositionDifference;
       }
     }
   }
