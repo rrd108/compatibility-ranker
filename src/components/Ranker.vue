@@ -33,6 +33,7 @@ import Stars from '@/components/Stars'
 export default {
   name: 'Ranker',
   components: {Stars},
+  props: ['token'],
   data() {
     return {
       maxPoints: 36,
@@ -44,7 +45,7 @@ export default {
   },
 
   created() {
-    axios.get(`${process.env.VUE_APP_API_URL}?names`)
+    axios.get(`${process.env.VUE_APP_API_URL}?token=${this.token}&names`)
       .then(response => this.people = response.data)
       .catch(error => console.error(error))
   },
@@ -57,7 +58,7 @@ export default {
 
   methods: {
     getAnalysis() {
-      axios.get(`${process.env.VUE_APP_API_URL}?analysis=${this.personId}`)
+      axios.get(`${process.env.VUE_APP_API_URL}?token=${this.token}&analysis=${this.personId}`)
         .then(response => this.possiblePartners = response.data.sort((a, b) => b.points - a.points))
         .catch(error => console.error(error))
 

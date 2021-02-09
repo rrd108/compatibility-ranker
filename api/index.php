@@ -6,7 +6,36 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+  return;
+}
+
 require('./secrets.php');
+
+if (isset($_GET['get-token'])) {
+  require('./get-token.php');
+  return;
+}
+
+if (!isset($_GET['token'])) {
+  header('HTTP/1.0 401 Unauthorized');
+  return;
+}
+
+if (isset($_GET['token'])) {
+  $tokenFound = false;
+  foreach ($secrets['users'] as $usr => $pass) {
+    if ($_GET['token'] == md5($usr . strrev($pass))) {
+      $tokenFound = true;
+    }
+  }
+}
+
+if (!$tokenFound) {
+  header('HTTP/1.0 401 Unauthorized');
+  return;
+}
+
 
 $pdo = new PDO('mysql:host=localhost;dbname=' . $secrets['mysqlDatabase'], $secrets['mysqlUser'], $secrets['mysqlPass']);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
