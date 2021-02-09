@@ -70,11 +70,18 @@ export default {
 </script>
 
 <style scoped>
+select {
+  padding: 0.3rem 0.5rem;
+  width: 100%;
+}
 article {
   background-color: #58a4b0;
   margin: 1rem;
   padding: 1rem;
   text-align: center;
+}
+article h1 {
+  font-size: 3rem;
 }
 section {
   margin: 1rem;

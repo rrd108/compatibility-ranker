@@ -41,4 +41,8 @@ header {
 main {
   padding: 1rem;
 }
+input {
+  padding: 0.3rem;
+  margin-left: 1rem;
+}
 </style>
