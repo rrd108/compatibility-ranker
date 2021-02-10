@@ -1,5 +1,10 @@
 <?php
+namespace CompatibilityRanker;
+
+use Branca\Branca;
 use PDO;
+
+require __DIR__ . '/vendor/autoload.php';
 
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
@@ -24,21 +29,18 @@ if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
 
 if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
   $token = str_replace('ApiKey ', '', $_SERVER['HTTP_AUTHORIZATION']);
-  $tokenFound = false;
-  foreach ($secrets['users'] as $usr => $pass) {
-    if ($token == md5($usr . strrev($pass))) {
-      $tokenFound = true;
-    }
+
+  $branca = new Branca($secrets['salt']);
+  $userEmail = $branca->decode($token);
+
+  $tokenFound = in_array($userEmail, array_keys($secrets['users']));
+  if (!$tokenFound) {
+    header('HTTP/1.0 401 Unauthorized');
+    return;
   }
 }
 
-if (!$tokenFound) {
-  header('HTTP/1.0 401 Unauthorized');
-  return;
-}
-
-
-$pdo = new PDO('mysql:host=localhost;dbname=' . $secrets['mysqlDatabase'], $secrets['mysqlUser'], $secrets['mysqlPass']);
+$pdo = new PDO('mysql:host=172.17.0.1;dbname=' . $secrets['mysqlDatabase'], $secrets['mysqlUser'], $secrets['mysqlPass']);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);

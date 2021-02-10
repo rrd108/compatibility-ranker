@@ -1,0 +1,14 @@
+{
+    "name": "rrd108/compatibility-ranker-api",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "rrd",
+            "email": "rrd@1108.cc"
+        }
+    ],
+    "require": {
+        "tuupola/branca": "^2.2"
+    }
+}
