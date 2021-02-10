@@ -45,7 +45,7 @@ export default {
   },
 
   created() {
-    axios.get(`${process.env.VUE_APP_API_URL}?&names`,
+    axios.get(`${process.env.VUE_APP_API_URL}?names`,
       {headers: {Authorization: `ApiKey ${this.token}`}})
       .then(response => this.people = response.data)
       .catch(error => console.error(error))
