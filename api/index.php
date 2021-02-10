@@ -40,7 +40,7 @@ if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
   }
 }
 
-$pdo = new PDO('mysql:host=172.17.0.1;dbname=' . $secrets['mysqlDatabase'], $secrets['mysqlUser'], $secrets['mysqlPass']);
+$pdo = new PDO('mysql:host=' . $secrets['mysql']['host'] . ';dbname=' . $secrets['mysql']['database'], $secrets['mysql']['user'], $secrets['mysql']['pass']);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
