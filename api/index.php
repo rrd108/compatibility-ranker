@@ -17,15 +17,16 @@ if (isset($_GET['get-token'])) {
   return;
 }
 
-if (!isset($_GET['token'])) {
+if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
   header('HTTP/1.0 401 Unauthorized');
   return;
 }
 
-if (isset($_GET['token'])) {
+if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+  $token = str_replace('ApiKey ', '', $_SERVER['HTTP_AUTHORIZATION']);
   $tokenFound = false;
   foreach ($secrets['users'] as $usr => $pass) {
-    if ($_GET['token'] == md5($usr . strrev($pass))) {
+    if ($token == md5($usr . strrev($pass))) {
       $tokenFound = true;
     }
   }

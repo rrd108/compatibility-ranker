@@ -45,7 +45,8 @@ export default {
   },
 
   created() {
-    axios.get(`${process.env.VUE_APP_API_URL}?token=${this.token}&names`)
+    axios.get(`${process.env.VUE_APP_API_URL}?&names`,
+      {headers: {Authorization: `ApiKey ${this.token}`}})
       .then(response => this.people = response.data)
       .catch(error => console.error(error))
   },
@@ -58,7 +59,8 @@ export default {
 
   methods: {
     getAnalysis() {
-      axios.get(`${process.env.VUE_APP_API_URL}?token=${this.token}&analysis=${this.personId}`)
+      axios.get(`${process.env.VUE_APP_API_URL}?analysis=${this.personId}`,
+        {headers: {Authorization: `ApiKey ${this.token}`}})
         .then(response => this.possiblePartners = response.data.sort((a, b) => b.points - a.points))
         .catch(error => console.error(error))
 
