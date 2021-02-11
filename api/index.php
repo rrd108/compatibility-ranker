@@ -4,6 +4,10 @@ namespace CompatibilityRanker;
 use Branca\Branca;
 use PDO;
 
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
+
 require __DIR__ . '/vendor/autoload.php';
 
 header('Access-Control-Allow-Origin: *');
@@ -47,7 +51,7 @@ $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 $pdo->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, "SET NAMES 'utf8'");
 
 if (isset($_GET['names'])) {
-  $stmt = $pdo->prepare("SELECT id, name, sex, YEAR(birth_date) AS birth_year, naksatra, moon
+  $stmt = $pdo->prepare("SELECT id, name, sex, YEAR(birth_date) AS birth_year, naksatra, moon, info
     FROM devs
     WHERE inactive = ''
     ORDER BY name");

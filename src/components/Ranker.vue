@@ -10,6 +10,7 @@
       <h2>{{targetPerson ? targetPerson.birth_year : ''}}</h2>
       <h3>Naksatra: {{targetPerson ? targetPerson.naksatra : ''}}</h3>
       <h4>Moon: {{targetPerson ? zodiacs[targetPerson.moon] : ''}} {{targetPerson ? targetPerson.moon : ''}}</h4>
+      <h5 v-html="personInfo"></h5>
     </article>
 
     <div>
@@ -52,6 +53,10 @@ export default {
   },
 
   computed: {
+    personInfo() {
+      //TODO color date
+      return this.targetPerson ? this.targetPerson.info.replace(/(?:\r\n|\r|\n)/g, '<br>') : ''
+    },
     targetPerson() {
       return this.people.find(person => person.id == this.personId)
     },
@@ -85,6 +90,10 @@ article {
 }
 article h1 {
   font-size: 3rem;
+}
+h5 {
+  background-color: #fff;
+  color: #000;
 }
 section {
   margin: 1rem;
