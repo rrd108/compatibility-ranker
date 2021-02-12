@@ -63,4 +63,13 @@ input {
   padding: 0.3rem;
   margin-left: 1rem;
 }
+button {
+  margin: 1rem auto;
+  padding: 0.6rem 1rem;
+  font-size: 1.5rem;
+  width: 90%;
+  background-color: #58a4b0;
+  color: #fff;
+  font-weight: bold;
+}
 </style>

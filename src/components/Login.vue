@@ -75,15 +75,6 @@ input {
   font-size: 1.5rem;
   margin-bottom: 0.3rem;
 }
-button {
-  margin: 1rem auto;
-  padding: 0.6rem 1rem;
-  font-size: 1.5rem;
-  width: 90vw;
-  background-color: #58a4b0;
-  color: #fff;
-  font-weight: bold;
-}
 aside {
   margin: 1rem auto;
   padding: 0.6rem 1rem;
