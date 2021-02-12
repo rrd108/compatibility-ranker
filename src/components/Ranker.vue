@@ -89,7 +89,7 @@ article {
   text-align: center;
 }
 article h1 {
-  font-size: 3rem;
+  font-size: 16vw;
 }
 h5 {
   background-color: #fff;
@@ -125,4 +125,18 @@ span {
 .outRange {
   background-color: #d64933;
 }
+
+@media screen and (min-width: 40em) {
+  article h1 {
+    font-size: 10vw;
+  }
+  li {
+    width: 25vw;
+    height: 20vw;
+  }
+  span {
+    font-size: 10vw;
+  }
+}
+
 </style>
