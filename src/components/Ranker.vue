@@ -2,7 +2,7 @@
   <div>
     <h3>Name</h3>
     <select @change="getAnalysis" v-model="personId">
-      <option v-for="person in people" :key="person.id" :value="person.id">{{person.name}}</option>
+      <option v-for="person in people" :key="person.id" :value="person.id">{{person.name}} ({{person.birth_year}})</option>
     </select>
 
     <article v-show="targetPerson">
@@ -81,6 +81,8 @@ export default {
 select {
   padding: 0.3rem 0.5rem;
   width: 100%;
+  position: sticky;
+  top: 0;
 }
 article {
   background-color: #58a4b0;
@@ -89,7 +91,7 @@ article {
   text-align: center;
 }
 article h1 {
-  font-size: 16vw;
+  font-size: 10vw;
 }
 h5 {
   background-color: #fff;
