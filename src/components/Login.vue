@@ -1,10 +1,16 @@
 <template>
   <div>
     <form @submit.prevent="login">
-      <label for="user">User</label>
+      <label for="user">
+        <font-awesome-icon icon="user-astronaut" />
+        User
+      </label>
       <input type="text" name="user" v-model="user">
 
-      <label for="password">Password</label>
+      <label for="password">
+        <font-awesome-icon icon="key" />
+        Pass
+      </label>
       <input type="password" name="password" v-model="password">
 
       <button type="submit">Login</button>
