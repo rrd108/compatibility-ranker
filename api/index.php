@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 if (isset($_GET['names'])) {
   $stmt = $pdo->prepare("SELECT id, name, sex, YEAR(birth_date) AS birth_year, naksatra, moon, info
     FROM devs
-    WHERE inactive = ''
+    WHERE inactive = '' OR inactive IS NULL
     ORDER BY name");
   $stmt->execute();
   $id = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -94,13 +94,12 @@ if ($_GET['analysis']) {
   $stmt = $pdo->prepare("SELECT id, name, birth_date, (" . $person['birth_year'] . " - YEAR(birth_date)) AS age_difference, naksatra, moon
     FROM devs
     WHERE sex IN $oppositeSex
-    AND inactive = ''");
+    AND (inactive = '' OR inactive IS NULL)");
   $stmt->execute();
   $possiblePartners = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   foreach ($possiblePartners as $i => $possiblePartner) {
     $possiblePartners[$i]['points'] = -1;
-    $possiblePartners[$i]['moonPosition'] = '?';
 
     if ($possiblePartner['naksatra'] && $possiblePartner['moon']) {
       // find the chart entry for this combination
