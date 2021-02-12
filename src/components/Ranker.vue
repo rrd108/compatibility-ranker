@@ -69,7 +69,7 @@
       <h2>{{targetPerson ? targetPerson.birth_year : ''}}</h2>
       <h3>Naksatra: {{targetPerson ? targetPerson.naksatra : ''}}</h3>
       <h4>Moon: {{targetPerson ? zodiacs[targetPerson.moon] : ''}} {{targetPerson ? targetPerson.moon : ''}}</h4>
-      <p v-html="personInfo"></p>
+      <p v-html="personInfo" v-show="personInfo"></p>
     </article>
 
     <div>
@@ -115,7 +115,7 @@ export default {
 
   computed: {
     personInfo() {
-      return this.targetPerson ? this.targetPerson.info.replace(/(?:\r\n|\r|\n)/g, '<br>') : ''
+      return this.targetPerson && this.targetPerson.info ? this.targetPerson.info.replace(/(?:\r\n|\r|\n)/g, '<br>') : ''
     },
     targetPerson() {
       return this.people.find(person => person.id == this.personId)
