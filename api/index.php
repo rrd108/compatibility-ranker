@@ -44,11 +44,25 @@ if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
   }
 }
 
+// user is authenticated
+
 $pdo = new PDO('mysql:host=' . $secrets['mysql']['host'] . ';charset=utf8;dbname=' . $secrets['mysql']['database'], $secrets['mysql']['user'], $secrets['mysql']['pass']);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 $pdo->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, "SET NAMES 'utf8'");
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $data = json_decode(file_get_contents('php://input'));
+  $data->data->ranpass = substr(uniqid(), 0 ,6);
+  $data->data->date = date('Y-m-d');
+  $data = (array) $data->data;
+  $stmt = $pdo->prepare("INSERT INTO devs (name, birth_date, birth_time, birth_place, sex, moon, naksatra, ranpass, date) VALUES (:name, :birth_date, :birth_time, :birth_place, :sex, :moon, :naksatra, :ranpass, :date)");
+  $stmt->execute($data);
+  $result = $pdo->lastInsertId();
+  echo json_encode($result);
+  return;
+}
 
 if (isset($_GET['names'])) {
   $stmt = $pdo->prepare("SELECT id, name, sex, YEAR(birth_date) AS birth_year, naksatra, moon, info
@@ -56,8 +70,8 @@ if (isset($_GET['names'])) {
     WHERE inactive = ''
     ORDER BY name");
   $stmt->execute();
-  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-  echo json_encode($result);
+  $id = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  echo json_encode($id);
   return;
 }
 

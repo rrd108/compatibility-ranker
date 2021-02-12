@@ -1,16 +1,75 @@
 <template>
   <div>
-    <h3>Name</h3>
+    <div class="row">
+      <h3>Name</h3>
+      <font-awesome-icon icon="user-plus" @click="showAdd = !showAdd" />
+    </div>
     <select @change="getAnalysis" v-model="personId">
       <option v-for="person in people" :key="person.id" :value="person.id">{{person.name}} ({{person.birth_year}})</option>
     </select>
+
+    <article v-show="showAdd">
+      <h2>Add new</h2>
+      <form @submit.prevent="addPerson">
+        <fieldset>
+          <label>
+            <font-awesome-icon icon="user-astronaut" /> Name
+          </label>
+          <input type="text" v-model="newPerson.name">
+        </fieldset>
+
+        <fieldset>
+          <label>
+            <font-awesome-icon icon="baby" /> Date
+          </label>
+          <input type="text" v-model="newPerson.birth_date">
+        </fieldset>
+
+        <fieldset>
+          <label>
+            <font-awesome-icon icon="clock" /> Time
+          </label>
+          <input type="text" v-model="newPerson.birth_time">
+        </fieldset>
+
+        <fieldset>
+          <label>
+            <font-awesome-icon icon="globe" /> Place
+          </label>
+          <input type="text" v-model="newPerson.birth_place">
+        </fieldset>
+
+        <fieldset>
+          <label>
+            <font-awesome-icon icon="mars-stroke" /> Sex
+          </label>
+          <input type="text" v-model="newPerson.sex">
+        </fieldset>
+
+        <fieldset>
+          <label>
+            <font-awesome-icon icon="moon" /> Moon
+          </label>
+          <input type="text" v-model="newPerson.moon">
+        </fieldset>
+
+        <fieldset>
+          <label>
+            <font-awesome-icon icon="meteor" /> Naksatra
+          </label>
+          <input type="text" v-model="newPerson.naksatra">
+        </fieldset>
+
+        <button type="submit">Save</button>
+      </form>
+    </article>
 
     <article v-show="targetPerson">
       <h1>{{targetPerson ? targetPerson.name : ''}}</h1>
       <h2>{{targetPerson ? targetPerson.birth_year : ''}}</h2>
       <h3>Naksatra: {{targetPerson ? targetPerson.naksatra : ''}}</h3>
       <h4>Moon: {{targetPerson ? zodiacs[targetPerson.moon] : ''}} {{targetPerson ? targetPerson.moon : ''}}</h4>
-      <h5 v-html="personInfo"></h5>
+      <p v-html="personInfo"></p>
     </article>
 
     <div>
@@ -38,9 +97,11 @@ export default {
   data() {
     return {
       maxPoints: 36,
+      newPerson: {},
       people: [],
       possiblePartners: [],
       personId: null,
+      showAdd: false,
       zodiacs: {'Aries': '♈', 'Taurus': '♉', 'Gemini' : '♊', 'Cancer' : '♋'	, 'Leo' : '♌', 'Virgo' : '♍', 'Libra' : '♎', 'Scorpio': '♏', 'Sagittarius' : '♐', 'Capricorn': '♑', 'Aquarius': '♒', 'Pisces' : '♓'}
     }
   },
@@ -54,7 +115,6 @@ export default {
 
   computed: {
     personInfo() {
-      //TODO color date
       return this.targetPerson ? this.targetPerson.info.replace(/(?:\r\n|\r|\n)/g, '<br>') : ''
     },
     targetPerson() {
@@ -63,12 +123,22 @@ export default {
   },
 
   methods: {
+    addPerson() {
+      axios.post(`${process.env.VUE_APP_API_URL}?newPerson`,
+        { data: this.newPerson },
+        { headers: {Authorization: `ApiKey ${this.token}`} })
+        .then(response => {
+          this.newPerson.id = response.data
+          this.people.push(this.newPerson)
+          this.newPerson = {}
+          })
+        .catch(error => console.error(error))
+    },
     getAnalysis() {
       axios.get(`${process.env.VUE_APP_API_URL}?analysis=${this.personId}`,
         {headers: {Authorization: `ApiKey ${this.token}`}})
         .then(response => this.possiblePartners = response.data.sort((a, b) => b.points - a.points))
         .catch(error => console.error(error))
-
     },
     outMoonRange(points) {
       return points > 6
@@ -78,11 +148,36 @@ export default {
 </script>
 
 <style scoped>
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 2rem;
+}
+.row svg {
+  cursor: pointer;
+}
 select {
   padding: 0.3rem 0.5rem;
   width: 100%;
   position: sticky;
   top: 0;
+  margin: 1rem 0;
+}
+form {
+  padding-top: 1rem;
+}
+fieldset {
+  display: flex;
+  border: none;
+  font-size: 0.9rem;
+}
+fieldset label {
+  text-align: left;
+  width: 50%;
+}
+button {
+  background: #fff;
+  color: #58a4b0;
 }
 article {
   background-color: #58a4b0;
@@ -93,9 +188,12 @@ article {
 article h1 {
   font-size: 10vw;
 }
-h5 {
+p {
+  margin-top: 1rem;
+  padding: 1rem;
   background-color: #fff;
   color: #000;
+  text-align: left;
 }
 section {
   margin: 1rem;
