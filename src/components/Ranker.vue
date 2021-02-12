@@ -108,17 +108,19 @@ ul {
   flex-wrap: wrap;
   justify-content: space-between;
   margin: 1rem;
+  align-items: center;
 }
 li {
   background-color: #0c7c59;
   padding: 1rem;
   margin: 1rem 0;
   color: #fff;
+  width: 100%;
+  text-align: center;
 }
 span {
-  font-size: 4rem;
+  font-size: 15vw;
   display: block;
-  width: 20vw;
 }
 .outRange {
   background-color: #d64933;
