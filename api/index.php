@@ -4,6 +4,8 @@ namespace CompatibilityRanker;
 use Branca\Branca;
 use PDO;
 
+$isAuthenticated = false;
+
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
@@ -37,8 +39,8 @@ if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
   $branca = new Branca($secrets['salt']);
   $userEmail = $branca->decode($token);
 
-  $tokenFound = in_array($userEmail, array_keys($secrets['users']));
-  if (!$tokenFound) {
+  $isAuthenticated = in_array($userEmail, array_keys($secrets['users']));
+  if (!$isAuthenticated) {
     header('HTTP/1.0 401 Unauthorized');
     return;
   }
