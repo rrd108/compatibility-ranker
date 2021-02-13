@@ -15,7 +15,7 @@ require __DIR__ . '/vendor/autoload.php';
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Methods: GET, PATCH, POST, OPTIONS');
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
   return;
@@ -58,11 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   require './post.php';
 }
 
-  $data = (array) $data->data;
-  $stmt = $pdo->prepare("INSERT INTO devs (name, birth_date, birth_time, birth_place, sex, moon, naksatra, ranpass, date) VALUES (:name, :birth_date, :birth_time, :birth_place, :sex, :moon, :naksatra, :ranpass, :date)");
-  echo json_encode($result);
-  return;
+if ($_SERVER['REQUEST_METHOD'] == 'PATCH') {
+  require './patch.php';
 }
+
 
 if (isset($_GET['names'])) {
   $stmt = $pdo->prepare("SELECT id, name, sex, YEAR(birth_date) AS birth_year, naksatra, moon, info

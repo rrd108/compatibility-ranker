@@ -69,7 +69,11 @@
       <h2>{{targetPerson ? targetPerson.birth_year : ''}}</h2>
       <h3>Naksatra: {{targetPerson ? targetPerson.naksatra : ''}}</h3>
       <h4>Moon: {{targetPerson ? zodiacs[targetPerson.moon] : ''}} {{targetPerson ? targetPerson.moon : ''}}</h4>
-      <p v-html="personInfo" v-show="personInfo"></p>
+      <div class="info">
+        <font-awesome-icon icon="info" />
+        <textarea v-model="targetPersonInfo"></textarea>
+        <font-awesome-icon icon="save" @click="saveInfo" />
+      </div>
     </article>
 
     <div>
@@ -102,6 +106,7 @@ export default {
       possiblePartners: [],
       personId: null,
       showAdd: false,
+      showEditInfo: false,
       zodiacs: {'Aries': '♈', 'Taurus': '♉', 'Gemini' : '♊', 'Cancer' : '♋'	, 'Leo' : '♌', 'Virgo' : '♍', 'Libra' : '♎', 'Scorpio': '♏', 'Sagittarius' : '♐', 'Capricorn': '♑', 'Aquarius': '♒', 'Pisces' : '♓'}
     }
   },
@@ -114,12 +119,17 @@ export default {
   },
 
   computed: {
-    personInfo() {
-      return this.targetPerson && this.targetPerson.info ? this.targetPerson.info.replace(/(?:\r\n|\r|\n)/g, '<br>') : ''
-    },
     targetPerson() {
       return this.people.find(person => person.id == this.personId)
     },
+    targetPersonInfo: {
+      get() {
+        return this.targetPerson ? this.targetPerson.info : ''
+      },
+      set(value) {
+        this.targetPerson.info = value
+      }
+    }
   },
 
   methods: {
@@ -142,7 +152,18 @@ export default {
     },
     outMoonRange(points) {
       return points > 6
-    }
+    },
+    saveInfo() {
+      axios.patch(
+        process.env.VUE_APP_API_URL,
+        {
+          id: this.targetPerson.id,
+          info: this.targetPerson.info
+        },
+        { headers: {Authorization: `ApiKey ${this.token}`} })
+        .then(response => console.log(response.data))
+        .catch(error => console.error(error))
+    },
   }
 }
 </script>
@@ -188,12 +209,21 @@ article {
 article h1 {
   font-size: 10vw;
 }
-p {
+.info {
   margin-top: 1rem;
   padding: 1rem;
   background-color: #fff;
   color: #000;
   text-align: left;
+  display: flex;
+  align-content: stretch;
+}
+.info p {
+  margin: 1rem;
+}
+.info textarea {
+  margin: 0 1rem;
+  width: 100%;
 }
 section {
   margin: 1rem;
