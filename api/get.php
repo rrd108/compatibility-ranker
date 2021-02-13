@@ -5,7 +5,7 @@ use PDO;
 
 if ($isAuthenticated) {
   if (isset($_GET['names'])) {
-    $stmt = $pdo->prepare("SELECT id, name, sex, YEAR(birth_date) AS birth_year, naksatra, moon, info
+    $stmt = $pdo->prepare("SELECT id, name, sex, birth_date, birth_time, birth_place, naksatra, moon, info
       FROM devs
       WHERE inactive = '' OR inactive IS NULL
       ORDER BY name");
@@ -31,7 +31,7 @@ if ($isAuthenticated) {
     $sex = in_array($person['sex'], ['nő', 'female']) ? 'girl' : 'boy';
 
     $oppositeSex = ($sex == 'girl') ? '("férfi", "male")' : '("nő", "female")';
-    $stmt = $pdo->prepare("SELECT id, name, birth_date, (" . $person['birth_year'] . " - YEAR(birth_date)) AS age_difference, naksatra, moon
+    $stmt = $pdo->prepare("SELECT id, name, birth_date, birth_time, birth_place, (" . $person['birth_year'] . " - YEAR(birth_date)) AS age_difference, naksatra, moon
       FROM devs
       WHERE sex IN $oppositeSex
       AND (inactive = '' OR inactive IS NULL)");

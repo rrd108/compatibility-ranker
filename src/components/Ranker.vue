@@ -5,7 +5,7 @@
       <font-awesome-icon icon="user-plus" @click="showAdd = !showAdd" />
     </div>
     <select @change="getAnalysis" v-model="personId">
-      <option v-for="person in people" :key="person.id" :value="person.id">{{person.name}} ({{person.birth_year}})</option>
+      <option v-for="person in people" :key="person.id" :value="person.id">{{person.name}} ({{person.birth_date.substring(0,4)}})</option>
     </select>
 
     <article v-show="showAdd">
@@ -66,9 +66,9 @@
 
     <article v-show="targetPerson">
       <h1>{{targetPerson ? targetPerson.name : ''}}</h1>
-      <h2>{{targetPerson ? targetPerson.birth_year : ''}}</h2>
-      <h3>Naksatra: {{targetPerson ? targetPerson.naksatra : ''}}</h3>
-      <h4>Moon: {{targetPerson ? zodiacs[targetPerson.moon] : ''}} {{targetPerson ? targetPerson.moon : ''}}</h4>
+      <h2>{{targetPerson ? `${targetPerson.birth_date}, ${targetPerson.birth_time}, ${targetPerson.birth_place}` : ''}}</h2>
+      <h3><font-awesome-icon icon="moon" /> {{targetPerson ? zodiacs[targetPerson.moon] : ''}} {{targetPerson ? targetPerson.moon : ''}}</h3>
+      <h3><font-awesome-icon icon="bahai" /> {{targetPerson ? targetPerson.naksatra : ''}}</h3>
       <div class="info">
         <font-awesome-icon icon="info" />
         <textarea v-model="targetPersonInfo"></textarea>
@@ -79,7 +79,9 @@
     <div>
       <section v-for="partner in possiblePartners" :key="partner.id">
         <h2>{{partner.name}}  <font-awesome-icon icon="link" @click="personId = partner.id;getAnalysis()" /></h2>
-        <h3>{{partner.birth_date}}</h3>
+        <h3>{{partner.birth_date}} {{partner.birth_time}}, {{partner.birth_place}}</h3>
+        <h4><font-awesome-icon icon="moon" /> {{zodiacs[partner.moon]}} {{partner.moon}}</h4>
+        <h4><font-awesome-icon icon="bahai" /> {{partner.naksatra}}</h4>
         <ul>
           <li><span>{{parseInt(partner.points / maxPoints * 100)}}%</span> ({{partner.points}} points)</li>
           <li :class="{outRange : outMoonRange(partner.stridirgha)}"><span>{{zodiacs[partner.moon]}}</span>{{partner.moon}}<br>Stridirgha: {{partner.stridirgha}}</li>
