@@ -4,36 +4,13 @@
       <img src="./assets/logo.png" alt="logo">
       <h1>Compatibility Ranker</h1>
     </header>
-
     <main>
-      <Login v-if="!token" @token="tokenReceived" />
-      <Ranker v-if="token" :token="token" />
+      <router-view/>
     </main>
   </div>
 </template>
 
-<script>
-import Login from '@/components/Login'
-import Ranker from '@/components/Ranker'
-
-export default {
-  name: 'App',
-  components: {
-    Login,
-    Ranker
-  },
-  data() {
-    return {
-      token: null,
-    }
-  },
-  methods: {
-    tokenReceived(data) {
-      this.token = data
-    }
-  }
-}
-</script>
+<script></script>
 
 <style>
 * {
