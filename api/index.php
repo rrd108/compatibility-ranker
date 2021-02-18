@@ -65,4 +65,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'PATCH') {
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
   require './get.php';
 }
-

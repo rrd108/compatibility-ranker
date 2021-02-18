@@ -49,4 +49,7 @@ button {
   color: #fff;
   font-weight: bold;
 }
+a {
+  color: #fff;
+}
 </style>

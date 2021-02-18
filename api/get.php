@@ -8,7 +8,7 @@ if ($isAuthenticated) {
     require './checkNaksatraAndMoon.php';
   }
 
-    if (isset($_GET['names'])) {
+  if (isset($_GET['names'])) {
     $stmt = $pdo->prepare("SELECT id, name, sex, birth_date, birth_time, birth_place, naksatra, moon, info
       FROM devs
       WHERE inactive = '' OR inactive IS NULL
