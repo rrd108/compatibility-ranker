@@ -9,6 +9,7 @@
         }
     ],
     "require": {
-        "tuupola/branca": "^2.2"
+        "tuupola/branca": "^2.2",
+        "guzzlehttp/guzzle": "^7.2"
     }
 }
