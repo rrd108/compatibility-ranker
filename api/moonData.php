@@ -38,7 +38,11 @@ function getNaksatra($person, $place) {
 }
 
 function getMoon($person, $place) {
+  // TODO we get forbidden, maybe because of the cookies
   $client = new \GuzzleHttp\Client();
+  $jar = new \GuzzleHttp\Cookie\CookieJar();
+  $response = $client->request('GET', 'https://cafeastrology.com/whats-my-moon-sign.html', ['cookies' => $jar]);
+
   $formData = [
     'month' => 3,
     'day' => 6,
@@ -51,11 +55,11 @@ function getMoon($person, $place) {
     'zp_lat_decimal' => 46.90618,
     'zp_long_decimal' => 19.69128,
     'zp_offset_geo' => 1,
-    'action' => 'zp_birthreport'
+    'action' => 'zp_birthreport',
+    'cookies' => $jar
   ];
 
   $response = $client->request('POST', 'https://cafeastrology.com/wp-admin/admin-ajax.php', $formData);
-  // TODO got forbidden response
   preg_match('/<p>You have Moon in (.*)./', $response->getBody(), $matches);
   return $matches[1];
 }
@@ -80,7 +84,7 @@ if ($isAuthenticated) {
 
     $place = getPlace($person['birth_place']);
     $naksatra = getNaksatra($person, $place);
-    $moon = getMoon($person, $place);
+    $moon = false;//getMoon($person, $place);
   }
 
   echo json_encode(['naksatra' => $naksatra, 'moon' => $moon]);

@@ -45,8 +45,15 @@ export default {
         .then(response => {
           if (person.naksatra != response.data.naksatra) {
             person.naksatra = response.data.naksatra
-            // TODO update DB
-          }
+            axios.patch(
+              process.env.VUE_APP_API_URL,
+              {
+                id: person.id,
+                naksatra: person.naksatra
+              },
+              { headers: {Authorization: `ApiKey ${this.token}`} })
+              .then(response => console.log(response.data))
+            }
           })
         .catch(error => console.error(error))
     }
