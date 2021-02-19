@@ -16,9 +16,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "addPerson" */ '../views/AddPerson.vue')
   },
   {
-    path: '/naksatra',
-    name: 'Naksatra',
-    component: () => import(/* webpackChunkName: "naksatra" */ '../views/Naksatra.vue')
+    path: '/moondata',
+    name: 'Moondata',
+    component: () => import(/* webpackChunkName: "moondata" */ '../views/Moondata.vue')
   }
 ]
 
