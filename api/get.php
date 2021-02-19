@@ -4,8 +4,8 @@ namespace CompatibilityRanker;
 use PDO;
 
 if ($isAuthenticated) {
-  if (isset($_GET['check'])) {
-    require './checkNaksatraAndMoon.php';
+  if (isset($_GET['moonData'])) {
+    require './moonData.php';
   }
 
   if (isset($_GET['names'])) {

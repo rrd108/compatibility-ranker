@@ -27,7 +27,7 @@
         <label>
           <font-awesome-icon icon="globe" /> Place
         </label>
-        <input type="text" v-model="birth_place" @blur="getNaksatraAndMoon">
+        <input type="text" v-model="birth_place" @blur="getMoonData">
       </fieldset>
 
       <fieldset>
@@ -92,8 +92,8 @@ export default {
           })
         .catch(error => console.error(error))
     },
-    getNaksatraAndMoon() {
-      axios.get(`${process.env.VUE_APP_API_URL}?check&date=${this.birth_date}&time=${this.birth_time}&place=${this.birth_place}`,
+    getMoonData() {
+      axios.get(`${process.env.VUE_APP_API_URL}?moonData&date=${this.birth_date}&time=${this.birth_time}&place=${this.birth_place}`,
         {headers: {Authorization: `ApiKey ${this.token}`}})
         .then(response => {
           this.moon = response.data.moon

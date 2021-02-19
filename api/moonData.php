@@ -49,11 +49,11 @@ if ($isAuthenticated) {
     $naksatra = getNaksatra($person, $place);
   }
 
-  if (is_numeric($_GET['check'])) {
+  if (is_numeric($_GET['moonData'])) {
     $stmt = $pdo->prepare("SELECT id, name, birth_date, birth_time, birth_place, naksatra, moon
       FROM devs
       WHERE id = ?");
-    $stmt->execute([$_GET['check']]);
+    $stmt->execute([$_GET['moonData']]);
     $person = $stmt->fetch(PDO::FETCH_ASSOC);
 
     $place = getPlace($person['birth_place']);

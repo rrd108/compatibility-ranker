@@ -12,7 +12,7 @@
           {{person.birth_time}}
           {{person.birth_place}}
         </p>
-        <span @click="check(person)">
+        <span @click="moonData(person)">
           <font-awesome-icon icon="moon" /> {{person.moon}}
           <font-awesome-icon icon="meteor" /> {{person.naksatra}}
         </span>
@@ -39,8 +39,8 @@ export default {
       .catch(error => console.error(error))
   },
   methods: {
-    check(person) {
-      axios.get(`${process.env.VUE_APP_API_URL}?check=${person.id}`,
+    moonData(person) {
+      axios.get(`${process.env.VUE_APP_API_URL}?moonData=${person.id}`,
         {headers: {Authorization: `ApiKey ${this.token}`}})
         .then(response => {
           if (person.naksatra != response.data.naksatra) {
