@@ -11,8 +11,8 @@
     <article v-show="targetPerson">
       <h1>{{targetPerson ? targetPerson.name : ''}}</h1>
       <h2>{{targetPerson ? `${targetPerson.birth_date}, ${targetPerson.birth_time}, ${targetPerson.birth_place}` : ''}}</h2>
-      <h3><font-awesome-icon icon="moon" /> {{targetPerson ? zodiacs[targetPerson.moon] : ''}} {{targetPerson ? targetPerson.moon : ''}}</h3>
-      <h3><font-awesome-icon icon="meteor" /> {{targetPerson ? targetPerson.naksatra : ''}}</h3>
+      <h3><font-awesome-icon icon="moon" @click="moonData(targetPerson)" /> {{targetPerson ? zodiacs[targetPerson.moon] : ''}} {{targetPerson ? targetPerson.moon : ''}}</h3>
+      <h3><font-awesome-icon icon="meteor" @click="moonData(targetPerson)" /> {{targetPerson ? targetPerson.naksatra : ''}}</h3>
       <div class="info">
         <font-awesome-icon icon="info" />
         <textarea v-model="targetPersonInfo"></textarea>
@@ -82,6 +82,24 @@ export default {
       axios.get(`${process.env.VUE_APP_API_URL}?analysis=${this.personId}`,
         {headers: {Authorization: `ApiKey ${this.token}`}})
         .then(response => this.possiblePartners = response.data.sort((a, b) => b.points - a.points))
+        .catch(error => console.error(error))
+    },
+    moonData(person) {
+      axios.get(`${process.env.VUE_APP_API_URL}?moonData=${person.id}`,
+        {headers: {Authorization: `ApiKey ${this.token}`}})
+        .then(response => {
+          if (person.naksatra != response.data.naksatra) {
+            person.naksatra = response.data.naksatra
+            axios.patch(
+              process.env.VUE_APP_API_URL,
+              {
+                id: person.id,
+                naksatra: person.naksatra
+              },
+              { headers: {Authorization: `ApiKey ${this.token}`} })
+              .then(response => console.log(response.data))
+            }
+          })
         .catch(error => console.error(error))
     },
     outMoonRange(points) {
