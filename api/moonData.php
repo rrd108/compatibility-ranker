@@ -38,26 +38,21 @@ function getNaksatra($person, $place) {
 }
 
 function getMoon($person, $place) {
-  // TODO we get forbidden, maybe because of the cookies
   $client = new \GuzzleHttp\Client(['cookies' => true, 'version' => 2.0]);
-  //$jar = new \GuzzleHttp\Cookie\CookieJar();
   $response = $client->request('GET', 'https://cafeastrology.com/whats-my-moon-sign.html');
-
 
   $geonamesClient = new \GuzzleHttp\Client();
   $response = $geonamesClient->request('GET', 'https://secure.geonames.org/searchJSON?name_startsWith='
     . $place . '&featureClass=P&style=full&maxRows=20&username=cafeastrology&lang=');
 
-  // TODO remove
-  //echo $response->getBody();die;
   $place = json_decode($response->getBody());
 
   $formData = [
-    'month' => 3,
-    'day' => 6,
-    'year' => 1977,
-    'hour' => 19,
-    'minute' => 30,
+    'month' => substr($person['birth_date'], 5, 2),
+    'day' => substr($person['birth_date'], 8, 2),
+    'year' => substr($person['birth_date'], 0, 4),
+    'hour' => substr($person['birth_time'], 0, 2),
+    'minute' => substr($person['birth_time'], 3, 2),
     'zp-report-variation' => 'planet_lookup_moon',
     'place' => $place->geonames[0]->name . ', ' . $place->geonames[0]->adminName1 . ', ' . $place->geonames[0]->countryName,
     'geo_timezone_id' => $place->geonames[0]->timezone->timeZoneId,
