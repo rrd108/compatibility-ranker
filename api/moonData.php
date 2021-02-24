@@ -39,9 +39,18 @@ function getNaksatra($person, $place) {
 
 function getMoon($person, $place) {
   // TODO we get forbidden, maybe because of the cookies
-  $client = new \GuzzleHttp\Client();
-  $jar = new \GuzzleHttp\Cookie\CookieJar();
-  $response = $client->request('GET', 'https://cafeastrology.com/whats-my-moon-sign.html', ['cookies' => $jar]);
+  $client = new \GuzzleHttp\Client(['cookies' => true, 'version' => 2.0]);
+  //$jar = new \GuzzleHttp\Cookie\CookieJar();
+  $response = $client->request('GET', 'https://cafeastrology.com/whats-my-moon-sign.html');
+
+
+  $geonamesClient = new \GuzzleHttp\Client();
+  $response = $geonamesClient->request('GET', 'https://secure.geonames.org/searchJSON?name_startsWith='
+    . $place . '&featureClass=P&style=full&maxRows=20&username=cafeastrology&lang=');
+
+  // TODO remove
+  //echo $response->getBody();die;
+  $place = json_decode($response->getBody());
 
   $formData = [
     'month' => 3,
@@ -50,29 +59,54 @@ function getMoon($person, $place) {
     'hour' => 19,
     'minute' => 30,
     'zp-report-variation' => 'planet_lookup_moon',
-    'place' => 'Kecskemét, Bács-Kiskun, Hungary',
-    'geo_timezone_id' => 'Europe/Budapest',
-    'zp_lat_decimal' => 46.90618,
-    'zp_long_decimal' => 19.69128,
-    'zp_offset_geo' => 1,
-    'action' => 'zp_birthreport',
-    'cookies' => $jar
+    'place' => $place->geonames[0]->name . ', ' . $place->geonames[0]->adminName1 . ', ' . $place->geonames[0]->countryName,
+    'geo_timezone_id' => $place->geonames[0]->timezone->timeZoneId,
+    'zp_lat_decimal' => $place->geonames[0]->lat,
+    'zp_long_decimal' => $place->geonames[0]->lng,
+    'zp_offset_geo' => '',  // ? $place->geonames[0]->timezone->gmtOffset,
+    'action' => 'zp_tz_offset',
   ];
 
-  $response = $client->request('POST', 'https://cafeastrology.com/wp-admin/admin-ajax.php', $formData);
-  preg_match('/<p>You have Moon in (.*)./', $response->getBody(), $matches);
+  $response = $client->request(
+    'POST',
+    'https://cafeastrology.com/wp-admin/admin-ajax.php', [
+      'form_params' => $formData,
+      'headers' => [
+        'Host' => 'cafeastrology.com',
+        'user-agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 ',
+        'accept' => '*/*'
+      ]
+    ]);
+  $response = json_decode($response->getBody());
+
+  $formData['zp_offset_geo'] = $response->offset_geo;
+  $formData['action'] = 'zp_birthreport';
+
+  $response = $client->request(
+    'POST',
+    'https://cafeastrology.com/wp-admin/admin-ajax.php', [
+      'form_params' => $formData,
+      'headers' => [
+        'Host' => 'cafeastrology.com',
+        'user-agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 ',
+        'accept' => '*/*'
+      ]
+    ]);
+
+  preg_match('/<p>You have Moon in ([^.]*)\./', $response->getBody(), $matches);
   return $matches[1];
 }
 
 if ($isAuthenticated) {
 
   if ($_GET['date'] && $_GET['time'] && $_GET['place']) {
-    $place = getPlace($person['birth_place']);
     $person = [
       'birth_date' => $_GET['date'],
-      'birth_time' => $_GET['time']
+      'birth_time' => $_GET['time'],
+      'birth_place' => $_GET['place'],
     ];
-    $naksatra = getNaksatra($person, $place);
+    $naksatra = getNaksatra($person, getPlace($person['birth_place']));
+    $moon = getMoon($person, $person['birth_place']);
   }
 
   if (is_numeric($_GET['moonData'])) {
@@ -81,11 +115,11 @@ if ($isAuthenticated) {
       WHERE id = ?");
     $stmt->execute([$_GET['moonData']]);
     $person = $stmt->fetch(PDO::FETCH_ASSOC);
-
     $place = getPlace($person['birth_place']);
     $naksatra = getNaksatra($person, $place);
-    $moon = false;//getMoon($person, $place);
+    $moon = getMoon($person, $place);
   }
+
 
   echo json_encode(['naksatra' => $naksatra, 'moon' => $moon]);
 
