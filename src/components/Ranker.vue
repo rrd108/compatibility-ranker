@@ -11,8 +11,13 @@
     <article v-show="targetPerson">
       <h1>{{targetPerson ? targetPerson.name : ''}}</h1>
       <h2>{{targetPerson ? `${targetPerson.birth_date}, ${targetPerson.birth_time}, ${targetPerson.birth_place}` : ''}}</h2>
-      <h3><font-awesome-icon icon="moon" @click="moonData(targetPerson)" /> {{targetPerson ? zodiacs[targetPerson.moon] : ''}} {{targetPerson ? targetPerson.moon : ''}}</h3>
-      <h3><font-awesome-icon icon="meteor" @click="moonData(targetPerson)" /> {{targetPerson ? targetPerson.naksatra : ''}}</h3>
+      <font-awesome-icon icon="sync" spin v-show="loading" />
+      <h3 class="pointer" v-show="!loading" @click="moonData(targetPerson)" title="Get Moon Data">
+        <font-awesome-icon icon="moon" /> {{targetPerson ? zodiacs[targetPerson.moon] : ''}} {{targetPerson ? targetPerson.moon : ''}}
+      </h3>
+      <h3 class="pointer" v-show="!loading" @click="moonData(targetPerson)" title="Get Moon Data">
+        <font-awesome-icon icon="meteor" /> {{targetPerson ? targetPerson.naksatra : ''}}
+      </h3>
       <div class="info">
         <font-awesome-icon icon="info" />
         <textarea v-model="targetPersonInfo"></textarea>
@@ -46,6 +51,7 @@ export default {
   props: ['token'],
   data() {
     return {
+      loading: false,
       maxPoints: 36,
       people: [],
       possiblePartners: [],
@@ -85,9 +91,11 @@ export default {
         .catch(error => console.error(error))
     },
     moonData(person) {
+      this.loading = true
       axios.get(`${process.env.VUE_APP_API_URL}?moonData=${person.id}`,
         {headers: {Authorization: `ApiKey ${this.token}`}})
         .then(response => {
+          this.loading = false
           if (person.naksatra != response.data.naksatra) {
             person.naksatra = response.data.naksatra
             axios.patch(
@@ -190,6 +198,9 @@ span {
 }
 .outRange {
   background-color: #d64933;
+}
+.pointer {
+  cursor: pointer;
 }
 
 @media screen and (min-width: 40em) {
