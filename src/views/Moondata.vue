@@ -12,7 +12,8 @@
           {{person.birth_time}}
           {{person.birth_place}}
         </p>
-        <span @click="moonData(person)">
+        <font-awesome-icon icon="sync" spin v-show="show[person.id]" />
+        <span @click="moonData(person)" title="Get Moon Data" v-show="!show[person.id]">
           <font-awesome-icon icon="moon" /> {{person.moon}}
           <font-awesome-icon icon="meteor" /> {{person.naksatra}}
         </span>
@@ -25,11 +26,12 @@
 import axios from 'axios'
 
 export default {
-  name: 'Naksatra',
+  name: 'MoonData',
   data() {
     return {
       people: [],
-      token: window.sessionStorage.getItem('cR')
+      token: window.sessionStorage.getItem('cR'),
+      show: [],
     }
   },
   created() {
@@ -40,9 +42,11 @@ export default {
   },
   methods: {
     moonData(person) {
+      this.$set(this.show, person.id, true)
       axios.get(`${process.env.VUE_APP_API_URL}?moonData=${person.id}`,
         {headers: {Authorization: `ApiKey ${this.token}`}})
         .then(response => {
+          this.show[person.id] = false
           if (person.naksatra != response.data.naksatra) {
             person.naksatra = response.data.naksatra
             axios.patch(
@@ -56,7 +60,7 @@ export default {
             }
           })
         .catch(error => console.error(error))
-    }
+    },
   }
 }
 </script>
@@ -68,5 +72,8 @@ ul {
 }
 li {
   margin-bottom: 1rem;
+}
+span {
+  cursor: pointer;
 }
 </style>
