@@ -80,7 +80,7 @@
             <ul id="additional">
               <li :class="{ inRange: !veda(partner.naksatra) }">
                 <h5>Veda</h5>
-                <span><font-awesome-icon icon="skull-crossbones" /></span>
+                <span><font-awesome-icon :icon="veda(partner.naksatra) ? 'skull-crossbones' : 'check-circle'" /></span>
                 {{ getNaksatraName(targetPerson.naksatra) }} <br />
                 {{ getNaksatraName(partner.naksatra) }}
               </li>
@@ -92,9 +92,10 @@
               <li>
                 <h5>Rasi</h5>
               </li>
-               <li :class="{ inRange: !rajju(partner.naksatra) }">
+              <li :class="{ inRange: !rajju(partner.naksatra) }">
                 <h5>Rajju</h5>
-                {{rajju(partner.naksatra) ? rajju(partner.naksatra) : 'OK'}}
+                <span><font-awesome-icon :icon="rajjuIcons[rajju(partner.naksatra)] ? rajjuIcons[rajju(partner.naksatra)] : 'check-circle'" /></span>
+                {{ rajju(partner.naksatra) ? rajju(partner.naksatra) : 'OK' }}
               </li>
             </ul>
           </li>
@@ -160,6 +161,13 @@ export default {
         'Uttara Bhadrapada': 'csípő',
         Uttaraphalguni: 'köldök',
         Visakha: 'köldök',
+      },
+      rajjuIcons: {
+        láb: 'walking',
+        csípő: 'money-bill-alt',
+        köldök: 'baby',
+        nyak: 'female',
+        fej: 'male'
       },
       showAdd: false,
       showEditInfo: false,
@@ -400,6 +408,10 @@ h5 {
   li {
     width: 29vw;
     height: 24vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
   span {
     font-size: 10vw;
@@ -411,6 +423,8 @@ h5 {
     grid-template-rows: 1fr 1fr;
     grid-gap: 0.3em;
     margin: 0;
+    align-items: normal;
+    width: 100%;
   }
   #additional li {
     width: auto;

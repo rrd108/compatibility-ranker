@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import {
   faBaby,
   faBomb,
+  faCheckCircle,
   faClock,
   faFemale,
   faGlobe,
@@ -15,6 +16,7 @@ import {
   faMale,
   faMarsStroke,
   faMeteor,
+  faMoneyBillAlt,
   faMoon,
   faSave,
   faSkullCrossbones,
@@ -22,12 +24,14 @@ import {
   faSync,
   faUserAstronaut,
   faUserPlus,
+  faWalking
 } from '@fortawesome/free-solid-svg-icons'
 import router from './router'
 
 library.add(
   faBaby,
   faBomb,
+  faCheckCircle,
   faClock,
   faFemale,
   faGlobe,
@@ -38,13 +42,15 @@ library.add(
   faMale,
   faMarsStroke,
   faMeteor,
+  faMoneyBillAlt,
   faMoon,
   faSave,
   faSkullCrossbones,
   faSpinner,
   faSync,
   faUserAstronaut,
-  faUserPlus
+  faUserPlus,
+  faWalking
 )
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
