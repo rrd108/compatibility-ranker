@@ -36,6 +36,22 @@
           <li :class="{outRange : outMoonRange(partner.stridirgha)}"><span>{{zodiacs[partner.moon]}}</span>{{partner.moon}}<br>Stridirgha: {{partner.stridirgha}}</li>
           <li><span>{{partner.age_difference}}</span> év korkülönbség</li>
         </ul>
+            <ul id="additional">
+              <li :class="{ outRange: outMoonRange(partner.stridirgha) }">
+               <h5>Stridirgha: {{ partner.stridirgha }}</h5>
+                <span>{{ zodiacs[partner.moon] }}</span>
+                {{ partner.moon }}
+              </li>
+              <li>
+               <h5>Veda</h5>
+              </li>
+              <li>
+               <h5>Rasi</h5>
+              </li>
+              <li>
+               <h5>Raja</h5>
+              </li>
+            </ul>
         <Stars :points="partner.points" />
       </section>
     </div>
