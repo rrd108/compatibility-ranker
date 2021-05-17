@@ -13,12 +13,12 @@
     </select>
 
     <article v-show="targetPerson">
-      <h1>{{ targetPerson ? targetPerson.name : "" }}</h1>
+      <h1>{{ targetPerson ? targetPerson.name : '' }}</h1>
       <h2>
         {{
           targetPerson
             ? `${targetPerson.birth_date}, ${targetPerson.birth_time}, ${targetPerson.birth_place}`
-            : ""
+            : ''
         }}
       </h2>
       <font-awesome-icon icon="sync" spin v-show="loading" />
@@ -29,8 +29,8 @@
         title="Get Moon Data"
       >
         <font-awesome-icon icon="moon" />
-        {{ targetPerson ? zodiacs[targetPerson.moon] : "" }}
-        {{ targetPerson ? targetPerson.moon : "" }}
+        {{ targetPerson ? zodiacs[targetPerson.moon] : '' }}
+        {{ targetPerson ? targetPerson.moon : '' }}
       </h3>
       <h3
         class="pointer"
@@ -39,7 +39,7 @@
         title="Get Moon Data"
       >
         <font-awesome-icon icon="meteor" />
-        {{ targetPerson ? targetPerson.naksatra : "" }}
+        {{ targetPerson ? targetPerson.naksatra : '' }}
       </h3>
       <div class="info">
         <font-awesome-icon icon="info" />
@@ -92,8 +92,9 @@
               <li>
                 <h5>Rasi</h5>
               </li>
-              <li>
-                <h5>Raja</h5>
+               <li :class="{ inRange: !rajju(partner.naksatra) }">
+                <h5>Rajju</h5>
+                {{rajju(partner.naksatra) ? rajju(partner.naksatra) : 'OK'}}
               </li>
             </ul>
           </li>
@@ -110,12 +111,12 @@
 </template>
 
 <script>
-import axios from "axios"
-import Stars from "@/components/Stars"
+import axios from 'axios'
+import Stars from '@/components/Stars'
 export default {
-  name: "Ranker",
+  name: 'Ranker',
   components: { Stars },
-  props: ["token"],
+  props: ['token'],
   data() {
     return {
       loading: false,
@@ -123,39 +124,76 @@ export default {
       people: [],
       possiblePartners: [],
       personId: null,
+      rajjus: {
+        // TODO ezek a naksatra nevek szerepelnek a chart.json-ban 210517-én
+        /* ha mindkettő
+            láb - állandó vándorlás - walking
+            csípő - szegénység - money-bill-alt
+            köldök - gyerek elvesztése - baby
+            nyak - feleség halála - female
+            fej - férj halála - male
+          Exception: If Rasi, Graha Maitra, Tara and Mahendra are present then Rajju need not be considered.
+        */
+        Anuradha: 'csipő',
+        Ardra: 'nyak',
+        Aslesha: 'láb',
+        Aswini: 'láb',
+        Bharani: 'csípő',
+        Chitra: 'fej',
+        Dhanishta: 'fej',
+        Hasta: 'nyak',
+        Jyeshtha: 'láb',
+        Krittika: 'köldök',
+        Magha: 'láb',
+        Mrigashirsha: 'fej',
+        Mula: 'láb',
+        Punarvasu: 'köldök',
+        Purvabhadrapada: 'köldök',
+        Purvashadha: 'csípő',
+        Pushya: 'csípő',
+        Revati: 'láb',
+        Rohini: 'nyak',
+        Satabhisha: 'nyak',
+        Sravana: 'nyak',
+        Svati: 'nyak',
+        'Uttara Ashadha': 'köldök',
+        'Uttara Bhadrapada': 'csípő',
+        Uttaraphalguni: 'köldök',
+        Visakha: 'köldök',
+      },
       showAdd: false,
       showEditInfo: false,
-      zodiacs: {
-        Aries: "♈",
-        Taurus: "♉",
-        Gemini: "♊",
-        Cancer: "♋",
-        Leo: "♌",
-        Virgo: "♍",
-        Libra: "♎",
-        Scorpio: "♏",
-        Sagittarius: "♐",
-        Capricorn: "♑",
-        Aquarius: "♒",
-        Pisces: "♓",
-      },
       vedas: {
         // TODO these names should be the same as in the database coming from the api call
         // and in the compatibility chart
-        Asvinni: "Jyeshtha",
-        Punarvasu: "Uttara Ashadha",
-        "Uttara Phalguni": "Purva Bhadrapada",
-        Bharani: "Anuradha",
-        Pushya: "Purva Ashadha",
-        Hasta: "Shatabisha",
-        Krithika: "Vishaka",
-        Aslesha: "Moola",
-        Rohini: "Svati",
-        Magha: "Revati",
-        Ardra: "Sravana",
-        "Purva Phalguni": "Uttara Bhadrapada",
-        Mrigashirsha: "Dhanishta",
-        Chitra: "Dhanishta",
+        Asvinni: 'Jyeshtha',
+        Punarvasu: 'Uttara Ashadha',
+        'Uttara Phalguni': 'Purva Bhadrapada',
+        Bharani: 'Anuradha',
+        Pushya: 'Purva Ashadha',
+        Hasta: 'Shatabisha',
+        Krithika: 'Vishaka',
+        Aslesha: 'Moola',
+        Rohini: 'Svati',
+        Magha: 'Revati',
+        Ardra: 'Sravana',
+        'Purva Phalguni': 'Uttara Bhadrapada',
+        Mrigashirsha: 'Dhanishta',
+        Chitra: 'Dhanishta',
+      },
+      zodiacs: {
+        Aries: '♈',
+        Taurus: '♉',
+        Gemini: '♊',
+        Cancer: '♋',
+        Leo: '♌',
+        Virgo: '♍',
+        Libra: '♎',
+        Scorpio: '♏',
+        Sagittarius: '♐',
+        Capricorn: '♑',
+        Aquarius: '♒',
+        Pisces: '♓',
       },
     }
   },
@@ -175,7 +213,7 @@ export default {
     },
     targetPersonInfo: {
       get() {
-        return this.targetPerson ? this.targetPerson.info : ""
+        return this.targetPerson ? this.targetPerson.info : ''
       },
       set(value) {
         this.targetPerson.info = value
@@ -198,7 +236,7 @@ export default {
         .catch((error) => console.error(error))
     },
     getNaksatraName(naksatra) {
-      return naksatra.substr(0, naksatra.indexOf(","))
+      return naksatra.substr(0, naksatra.indexOf(','))
     },
     inMoonRange(points) {
       return points <= 6
@@ -232,6 +270,15 @@ export default {
         })
         .catch((error) => console.error(error))
     },
+    rajju(partnerNaksatra) {
+      if (
+        this.rajjus[this.getNaksatraName(partnerNaksatra)] ==
+        this.rajjus[this.getNaksatraName(this.targetPerson.naksatra)]
+      ) {
+        return this.rajjus[this.getNaksatraName(partnerNaksatra)]
+      }
+      return false
+    },
     saveInfo() {
       axios
         .patch(
@@ -246,10 +293,16 @@ export default {
         .catch((error) => console.error(error))
     },
     veda(partnerNaksatra) {
-      if (this.vedas[this.getNaksatraName(partnerNaksatra)] == this.getNaksatraName(this.targetPerson.naksatra)) {
+      if (
+        this.vedas[this.getNaksatraName(partnerNaksatra)] ==
+        this.getNaksatraName(this.targetPerson.naksatra)
+      ) {
         return true
       }
-      if (this.vedas[this.getNaksatraName(this.targetPerson.naksatra)] == this.getNaksatraName(partnerNaksatra)) {
+      if (
+        this.vedas[this.getNaksatraName(this.targetPerson.naksatra)] ==
+        this.getNaksatraName(partnerNaksatra)
+      ) {
         return true
       }
       return false
@@ -346,7 +399,7 @@ h5 {
   }
   li {
     width: 29vw;
-    height: 20vw;
+    height: 24vw;
   }
   span {
     font-size: 10vw;
