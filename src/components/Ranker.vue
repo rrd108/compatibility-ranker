@@ -78,19 +78,22 @@
           </li>
           <li>
             <ul id="additional">
-              <li :class="{ outRange: outMoonRange(partner.stridirgha) }">
-               <h5>Stridirgha: {{ partner.stridirgha }}</h5>
+              <li :class="{ inRange: !veda(partner.naksatra) }">
+                <h5>Veda</h5>
+                <span><font-awesome-icon icon="skull-crossbones" /></span>
+                {{ getNaksatraName(targetPerson.naksatra) }} <br />
+                {{ getNaksatraName(partner.naksatra) }}
+              </li>
+              <li :class="{ inRange: inMoonRange(partner.stridirgha) }">
+                <h5>Stridirgha</h5>
                 <span>{{ zodiacs[partner.moon] }}</span>
-                {{ partner.moon }}
+                {{ partner.moon }}<br />{{ partner.stridirgha }}
               </li>
               <li>
-               <h5>Veda</h5>
+                <h5>Rasi</h5>
               </li>
               <li>
-               <h5>Rasi</h5>
-              </li>
-              <li>
-               <h5>Raja</h5>
+                <h5>Raja</h5>
               </li>
             </ul>
           </li>
@@ -98,7 +101,9 @@
             <span>{{ partner.age_difference }}</span> év korkülönbség
           </li>
         </ul>
-        <Stars :points="partner.points" /><!-- TODO here conside points + 4 additional -->
+        <Stars
+          :points="partner.points"
+        /><!-- TODO here conside points + 4 additional -->
       </section>
     </div>
   </div>
@@ -133,6 +138,24 @@ export default {
         Capricorn: "♑",
         Aquarius: "♒",
         Pisces: "♓",
+      },
+      vedas: {
+        // TODO these names should be the same as in the database coming from the api call
+        // and in the compatibility chart
+        Asvinni: "Jyeshtha",
+        Punarvasu: "Uttara Ashadha",
+        "Uttara Phalguni": "Purva Bhadrapada",
+        Bharani: "Anuradha",
+        Pushya: "Purva Ashadha",
+        Hasta: "Shatabisha",
+        Krithika: "Vishaka",
+        Aslesha: "Moola",
+        Rohini: "Svati",
+        Magha: "Revati",
+        Ardra: "Sravana",
+        "Purva Phalguni": "Uttara Bhadrapada",
+        Mrigashirsha: "Dhanishta",
+        Chitra: "Dhanishta",
       },
     }
   },
@@ -174,6 +197,12 @@ export default {
         )
         .catch((error) => console.error(error))
     },
+    getNaksatraName(naksatra) {
+      return naksatra.substr(0, naksatra.indexOf(","))
+    },
+    inMoonRange(points) {
+      return points <= 6
+    },
     moonData(person) {
       this.loading = true
       axios
@@ -203,9 +232,6 @@ export default {
         })
         .catch((error) => console.error(error))
     },
-    outMoonRange(points) {
-      return points > 6
-    },
     saveInfo() {
       axios
         .patch(
@@ -218,6 +244,15 @@ export default {
         )
         .then((response) => console.log(response.data))
         .catch((error) => console.error(error))
+    },
+    veda(partnerNaksatra) {
+      if (this.vedas[this.getNaksatraName(partnerNaksatra)] == this.getNaksatraName(this.targetPerson.naksatra)) {
+        return true
+      }
+      if (this.vedas[this.getNaksatraName(this.targetPerson.naksatra)] == this.getNaksatraName(partnerNaksatra)) {
+        return true
+      }
+      return false
     },
   },
 }
@@ -287,13 +322,19 @@ li {
   width: 100%;
   text-align: center;
 }
+#additional li {
+  background-color: #d64933;
+}
 span {
   font-size: 15vw;
   display: block;
 }
-h5 {font-size: 1.1rem;}
-.outRange {
-  background-color: #d64933;
+h5 {
+  font-size: 1.1rem;
+}
+.inRange,
+#additional li.inRange {
+  background-color: #22b73b;
 }
 .pointer {
   cursor: pointer;
@@ -304,7 +345,7 @@ h5 {font-size: 1.1rem;}
     font-size: 10vw;
   }
   li {
-    width: 25vw;
+    width: 29vw;
     height: 20vw;
   }
   span {
@@ -315,7 +356,7 @@ h5 {font-size: 1.1rem;}
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    grid-gap: .3em;
+    grid-gap: 0.3em;
     margin: 0;
   }
   #additional li {
