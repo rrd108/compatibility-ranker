@@ -10,7 +10,7 @@ import Login from '@/components/Login'
 import Ranker from '@/components/Ranker'
 
 export default {
-  name: 'App',
+  name: 'Home',
   components: {
     Login,
     Ranker
