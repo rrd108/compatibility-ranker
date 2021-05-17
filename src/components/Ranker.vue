@@ -96,13 +96,15 @@ export default {
         {headers: {Authorization: `ApiKey ${this.token}`}})
         .then(response => {
           this.loading = false
-          if (person.naksatra != response.data.naksatra) {
+          if (person.naksatra != response.data.naksatra || person.moon != response.data.moon) {
             person.naksatra = response.data.naksatra
+            person.moon = response.data.moon
             axios.patch(
               process.env.VUE_APP_API_URL,
               {
                 id: person.id,
-                naksatra: person.naksatra
+                naksatra: person.naksatra,
+                moon: person.moon
               },
               { headers: {Authorization: `ApiKey ${this.token}`} })
               .then(response => console.log(response.data))
