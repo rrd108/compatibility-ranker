@@ -284,6 +284,11 @@ export default {
           return false
         }
       }
+      if (this.targetPerson.sex == 'nő' || this.targetPerson.sex == 'female') {
+        if (ageDifference >= -4 && ageDifference <= 10) {
+          return false
+        }
+      }
       return true
     },
     moonData(person) {
