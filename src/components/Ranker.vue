@@ -99,7 +99,7 @@
               </li>
             </ul>
           </li>
-          <li>
+          <li :class="{ outRange: isAgeDifferenceBig(partner.age_difference) }">
             <span>{{ partner.age_difference }}</span> év korkülönbség
           </li>
         </ul>
@@ -249,6 +249,15 @@ export default {
     inMoonRange(points) {
       return points <= 6
     },
+    isAgeDifferenceBig(ageDifference) {
+      // the man should be older maximum 10 years or younger maximum 4 years
+      if (this.targetPerson.sex == 'férfi' || this.targetPerson.sex == 'male') {
+        if(ageDifference <= 4 && ageDifference >= -10) {
+          return false
+        }
+      }
+      return true
+    },
     moonData(person) {
       this.loading = true
       axios
@@ -383,7 +392,7 @@ li {
   width: 100%;
   text-align: center;
 }
-#additional li {
+#additional li, .outRange {
   background-color: #d64933;
 }
 span {
