@@ -62,12 +62,15 @@ if ($isAuthenticated) {
 
           $personMoonPosition = array_search($person['moon'], $zodiacs);
           $possiblePartnerMoonPosition = array_search($possiblePartner['moon'], $zodiacs);
+          // female - male
           if ($sex == 'girl') {
             $moonPositionDifference = $personMoonPosition - $possiblePartnerMoonPosition;
           }
           if ($sex == 'boy') {
             $moonPositionDifference =  $possiblePartnerMoonPosition - $personMoonPosition;
           }
+          // male - female
+          $possiblePartners[$i]['rashi'] = - $moonPositionDifference;
           $possiblePartners[$i]['stridirgha'] = $moonPositionDifference > 0 ? $moonPositionDifference : 12 + $moonPositionDifference;
         }
       }

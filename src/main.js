@@ -7,6 +7,7 @@ import {
   faBomb,
   faCheckCircle,
   faClock,
+  faExclamationCircle,
   faFemale,
   faGlobe,
   faHeart,
@@ -33,6 +34,7 @@ library.add(
   faBomb,
   faCheckCircle,
   faClock,
+  faExclamationCircle,
   faFemale,
   faGlobe,
   faHeart,
@@ -59,5 +61,5 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
-  render: h => h(App),
+  render: h => h(App)
 }).$mount('#app')

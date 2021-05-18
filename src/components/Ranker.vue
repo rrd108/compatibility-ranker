@@ -80,7 +80,14 @@
             <ul id="additional">
               <li :class="{ inRange: !veda(partner.naksatra) }">
                 <h5>Veda</h5>
-                <span><font-awesome-icon :icon="veda(partner.naksatra) ? 'skull-crossbones' : 'check-circle'" /></span>
+                <span
+                  ><font-awesome-icon
+                    :icon="
+                      veda(partner.naksatra)
+                        ? 'skull-crossbones'
+                        : 'check-circle'
+                    "
+                /></span>
                 {{ getNaksatraName(targetPerson.naksatra) }} <br />
                 {{ getNaksatraName(partner.naksatra) }}
               </li>
@@ -89,12 +96,33 @@
                 <span>{{ zodiacs[partner.moon] }}</span>
                 {{ partner.moon }}<br />{{ partner.stridirgha }}
               </li>
-              <li>
-                <h5>Rasi</h5>
+              <li
+                :class="[
+                  { inRange: !partner.rashi || partner.rashi == 6 },
+                  { nice: partner.rashi < 0 },  // TODO is it like this?
+                ]"
+              >
+                <h5>? Rashi</h5>
+                <span
+                  ><font-awesome-icon
+                    :icon="
+                      !partner.rashi || partner.rashi == 6
+                        ? 'check-circle'
+                        : 'exclamation-circle'
+                    "
+                /></span>
+                {{ rashi(partner.rashi) }}
               </li>
               <li :class="{ inRange: !rajju(partner.naksatra) }">
                 <h5>Rajju</h5>
-                <span><font-awesome-icon :icon="rajjuIcons[rajju(partner.naksatra)] ? rajjuIcons[rajju(partner.naksatra)] : 'check-circle'" /></span>
+                <span
+                  ><font-awesome-icon
+                    :icon="
+                      rajjuIcons[rajju(partner.naksatra)]
+                        ? rajjuIcons[rajju(partner.naksatra)]
+                        : 'check-circle'
+                    "
+                /></span>
                 {{ rajju(partner.naksatra) ? rajju(partner.naksatra) : 'OK' }}
               </li>
             </ul>
@@ -167,7 +195,7 @@ export default {
         csípő: 'money-bill-alt',
         köldök: 'baby',
         nyak: 'female',
-        fej: 'male'
+        fej: 'male',
       },
       showAdd: false,
       showEditInfo: false,
@@ -252,7 +280,7 @@ export default {
     isAgeDifferenceBig(ageDifference) {
       // the man should be older maximum 10 years or younger maximum 4 years
       if (this.targetPerson.sex == 'férfi' || this.targetPerson.sex == 'male') {
-        if(ageDifference <= 4 && ageDifference >= -10) {
+        if (ageDifference >= -10 && ageDifference <= 4) {
           return false
         }
       }
@@ -295,6 +323,13 @@ export default {
         return this.rajjus[this.getNaksatraName(partnerNaksatra)]
       }
       return false
+    },
+    rashi(partnerRashi) {
+      if (!partnerRashi) {
+        return '='
+      }
+      let rashiNum = Math.abs(partnerRashi) + 1
+      return `${rashiNum}/${14 - rashiNum}`
     },
     saveInfo() {
       axios
@@ -392,8 +427,12 @@ li {
   width: 100%;
   text-align: center;
 }
-#additional li, .outRange {
+#additional li,
+.outRange {
   background-color: #d64933;
+}
+#additional li.nice {
+  background-color: #278735;
 }
 span {
   font-size: 15vw;
