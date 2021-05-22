@@ -17,7 +17,7 @@ export default {
   },
   data() {
     return {
-      token: null,
+      token: sessionStorage.getItem('cR')
     }
   },
   methods: {
