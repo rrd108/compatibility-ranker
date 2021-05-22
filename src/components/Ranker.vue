@@ -390,13 +390,21 @@ article {
   margin: 1rem;
   padding: 1rem;
   text-align: center;
+  position: sticky;
+  top: 0;
 }
 article h1 {
-  font-size: 10vw;
+  font-size: 1.5rem;
+}
+article h2 {
+  font-size: 1.25rem;
+}
+article h3 {
+  font-size: 1rem;
 }
 .info {
-  margin-top: 1rem;
-  padding: 1rem;
+  margin-top: .5em;
+  padding: .5em;
   background-color: #fff;
   color: #000;
   text-align: left;
@@ -404,10 +412,10 @@ article h1 {
   align-content: stretch;
 }
 .info p {
-  margin: 1rem;
+  margin: .5em;
 }
 .info textarea {
-  margin: 0 1rem;
+  margin: 0 .5em;
   width: 100%;
 }
 section {
@@ -422,16 +430,26 @@ ul {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin: 1rem;
+  margin: .5em;
   align-items: center;
 }
 li {
   background-color: #0c7c59;
-  padding: 1rem;
-  margin: 1rem 0;
+  padding: 0.5em;
+  margin: 0.25em 0;
   color: #fff;
   width: 100%;
   text-align: center;
+  font-size: 0.75rem;
+}
+#additional {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-gap: 0.3em;
+  margin: 0;
+  align-items: normal;
+  width: 100%;
 }
 #additional li,
 .outRange {
@@ -441,7 +459,7 @@ li {
   background-color: #278735;
 }
 span {
-  font-size: 15vw;
+  font-size: 1.5rem;
   display: block;
 }
 h5 {
@@ -457,7 +475,7 @@ h5 {
 
 @media screen and (min-width: 40em) {
   article h1 {
-    font-size: 10vw;
+    font-size: 5vw;
   }
   li {
     width: 29vw;
@@ -466,6 +484,7 @@ h5 {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    font-size: 1rem;
   }
   span {
     font-size: 10vw;
