@@ -99,7 +99,7 @@
               <li
                 :class="[
                   { inRange: !partner.rashi || partner.rashi == 6 },
-                  { nice: partner.rashi < 0 },  // TODO is it like this?
+                  { nice: partner.rashi < 0 }, // TODO is it like this?
                 ]"
               >
                 <h5>? Rashi</h5>
@@ -163,32 +163,33 @@ export default {
             fej - férj halála - male
           Exception: If Rasi, Graha Maitra, Tara and Mahendra are present then Rajju need not be considered.
         */
+        // TODO Purva Phalguni is missing
         Anuradha: 'csipő',
         Ardra: 'nyak',
-        Aslesha: 'láb',
-        Aswini: 'láb',
+        Ashlesha: 'láb',
+        Ashwini: 'láb',
         Bharani: 'csípő',
         Chitra: 'fej',
         Dhanishta: 'fej',
         Hasta: 'nyak',
-        Jyeshtha: 'láb',
-        Krittika: 'köldök',
+        Jyeshta: 'láb',
+        Krithika: 'köldök',
         Magha: 'láb',
         Mrigashirsha: 'fej',
-        Mula: 'láb',
+        Moola: 'láb',
         Punarvasu: 'köldök',
-        Purvabhadrapada: 'köldök',
+        'Purva Bhadrapada': 'köldök',
         Purvashadha: 'csípő',
         Pushya: 'csípő',
         Revati: 'láb',
         Rohini: 'nyak',
         Satabhisha: 'nyak',
-        Sravana: 'nyak',
-        Svati: 'nyak',
+        Shravana: 'nyak',
+        Swati: 'nyak',
         'Uttara Ashadha': 'köldök',
         'Uttara Bhadrapada': 'csípő',
         Uttaraphalguni: 'köldök',
-        Visakha: 'köldök',
+        Vishaka: 'köldök',
       },
       rajjuIcons: {
         láb: 'walking',
@@ -202,17 +203,17 @@ export default {
       vedas: {
         // TODO these names should be the same as in the database coming from the api call
         // and in the compatibility chart
-        Asvinni: 'Jyeshtha',
+        Ashwini: 'Jyeshta',
         Punarvasu: 'Uttara Ashadha',
         'Uttara Phalguni': 'Purva Bhadrapada',
         Bharani: 'Anuradha',
         Pushya: 'Purva Ashadha',
         Hasta: 'Shatabisha',
         Krithika: 'Vishaka',
-        Aslesha: 'Moola',
-        Rohini: 'Svati',
+        Ashlesha: 'Moola',
+        Rohini: 'Swati',
         Magha: 'Revati',
-        Ardra: 'Sravana',
+        Ardra: 'Shravana',
         'Purva Phalguni': 'Uttara Bhadrapada',
         Mrigashirsha: 'Dhanishta',
         Chitra: 'Dhanishta',
