@@ -1,4 +1,5 @@
 <?php
+
 namespace CompatibilityRanker;
 
 use PDO;
@@ -19,7 +20,7 @@ if ($isAuthenticated) {
     return;
   }
 
-  if ($_GET['analysis']) {
+  if (isset($_GET['analysis'])) {
     $zodiacs = ['Aires', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
 
     $chart = file_get_contents('../data/chart.json');
@@ -70,7 +71,7 @@ if ($isAuthenticated) {
             $moonPositionDifference =  $possiblePartnerMoonPosition - $personMoonPosition;
           }
           // male - female
-          $possiblePartners[$i]['rashi'] = - $moonPositionDifference;
+          $possiblePartners[$i]['rashi'] = -$moonPositionDifference;
           $possiblePartners[$i]['stridirgha'] = $moonPositionDifference > 0 ? $moonPositionDifference : 12 + $moonPositionDifference;
         }
       }
