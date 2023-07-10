@@ -33,7 +33,7 @@ if ($isAuthenticated) {
     $person = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // select everybody for the other sex
-    $sex = in_array($person['sex'], ['nő', 'female']) ? 'girl' : 'boy';
+    $sex = in_array($person['sex'], ['no', 'nő', 'female']) ? 'girl' : 'boy';
 
     $oppositeSex = ($sex == 'girl') ? '("férfi", "male")' : '("nő", "female")';
     $stmt = $pdo->prepare("SELECT id, name, birth_date, birth_time, birth_place, (" . $person['birth_year'] . " - YEAR(birth_date)) AS age_difference, naksatra, moon
