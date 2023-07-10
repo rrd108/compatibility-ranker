@@ -7,7 +7,9 @@
       <h3>Name</h3>
 
       <router-link to="addPerson">
+
         <font-awesome-icon icon="user-plus" />
+
       </router-link>
 
     </div>
@@ -72,13 +74,7 @@
 
         <h2>
            {{ partner.name }}
-          <font-awesome-icon
-            icon="link"
-            @click="
-              personId = partner.id
-              getAnalysis()
-            "
-          />
+          <font-awesome-icon icon="link" @click="analize(partner.id)" />
 
         </h2>
 
@@ -94,6 +90,7 @@
         </h4>
 
         <h4>
+
           <font-awesome-icon icon="meteor" />
            {{ partner.naksatra }}
         </h4>
@@ -115,6 +112,7 @@
                 <h5>Veda</h5>
 
                 <span>
+
                   <font-awesome-icon
                     :icon="
                       veda(partner.naksatra)
@@ -122,6 +120,7 @@
                         : 'check-circle'
                     "
                   />
+
                 </span>
                  {{ getNaksatraName(targetPerson.naksatra) }}
                 <br />
@@ -135,7 +134,7 @@
                 <span>{{ zodiacs[partner.moon] }}</span>
                  {{ partner.moon }}
                 <br />
-                {{ partner.stridirgha }}
+                 {{ partner.stridirgha }}
               </li>
 
               <li
@@ -148,6 +147,7 @@
                 <h5>? Rashi</h5>
 
                 <span>
+
                   <font-awesome-icon
                     :icon="
                       !partner.rashi || partner.rashi == 6
@@ -155,6 +155,7 @@
                         : 'exclamation-circle'
                     "
                   />
+
                 </span>
                  {{ rashi(partner.rashi) }}
               </li>
@@ -164,6 +165,7 @@
                 <h5>Rajju</h5>
 
                 <span>
+
                   <font-awesome-icon
                     :icon="
                       rajjuIcons[rajju(partner.naksatra)]
@@ -171,6 +173,7 @@
                         : 'check-circle'
                     "
                   />
+
                 </span>
                  {{ rajju(partner.naksatra) ? rajju(partner.naksatra) : 'OK' }}
               </li>
@@ -188,6 +191,7 @@
         </ul>
 
         <Stars :points="partner.points" />
+
         <!-- TODO here conside points + 4 additional -->
 
       </section>
@@ -318,6 +322,10 @@
     },
 
     methods: {
+      analize(id) {
+        personId = id
+        getAnalysis()
+      },
       getAnalysis() {
         axios
           .get(
