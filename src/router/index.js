@@ -13,18 +13,18 @@ const routes = [
   {
     path: '/addPerson',
     name: 'AddPerson',
-    component: () => import(/* webpackChunkName: "addPerson" */ '../views/AddPerson.vue')
+    component: () => import('../views/AddPerson.vue')
   },
   {
     path: '/moondata',
     name: 'Moondata',
-    component: () => import(/* webpackChunkName: "moondata" */ '../views/Moondata.vue')
+    component: () => import('../views/Moondata.vue')
   }
 ]
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
+  base: import.meta.env.BASE_URL,
   routes
 })
 
