@@ -1,15 +1,14 @@
 {
-    "name": "rrd108/compatibility-ranker-api",
-    "type": "project",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "rrd",
-            "email": "rrd@1108.cc"
-        }
-    ],
-    "require": {
-        "tuupola/branca": "^2.2",
-        "guzzlehttp/guzzle": "^7.2"
+  "name": "rrd108/compatibility-ranker-api",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "rrd",
+      "email": "rrd@1108.cc"
     }
+  ],
+  "require": {
+    "guzzlehttp/guzzle": "^7.2"
+  }
 }
