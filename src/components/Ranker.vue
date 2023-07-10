@@ -1,207 +1,3 @@
-<template>
-
-  <div>
-
-    <div class="row">
-
-      <h3>Name</h3>
-
-      <router-link to="addPerson">
-
-        <font-awesome-icon icon="user-plus" />
-
-      </router-link>
-
-    </div>
-
-    <select @change="getAnalysis" v-model="personId">
-
-      <option v-for="person in people" :key="person.id" :value="person.id">
-         {{ person.name }} ({{ person.birth_date.substring(0, 4) }})
-      </option>
-
-    </select>
-
-    <article v-show="targetPerson">
-
-      <h1>{{ targetPerson ? targetPerson.name : '' }}</h1>
-
-      <h2>
-         {{ targetPerson ? `${targetPerson.birth_date}, ${targetPerson.birth_time},
-        ${targetPerson.birth_place}` : '' }}
-      </h2>
-
-      <font-awesome-icon icon="sync" spin v-show="loading" />
-
-      <h3
-        class="pointer"
-        v-show="!loading"
-        @click="moonData(targetPerson)"
-        title="Get Moon Data"
-      >
-
-        <font-awesome-icon icon="moon" />
-         {{ targetPerson ? zodiacs[targetPerson.moon] : '' }} {{ targetPerson ? targetPerson.moon
-        : '' }}
-      </h3>
-
-      <h3
-        class="pointer"
-        v-show="!loading"
-        @click="moonData(targetPerson)"
-        title="Get Moon Data"
-      >
-
-        <font-awesome-icon icon="meteor" />
-         {{ targetPerson ? targetPerson.naksatra : '' }}
-      </h3>
-
-      <div class="info">
-
-        <font-awesome-icon icon="info" />
-
-        <textarea v-model="targetPersonInfo"></textarea>
-
-        <font-awesome-icon icon="save" @click="saveInfo" />
-
-      </div>
-
-    </article>
-
-    <div>
-
-      <section v-for="partner in possiblePartners" :key="partner.id">
-
-        <h2>
-           {{ partner.name }}
-          <font-awesome-icon icon="link" @click="analize(partner.id)" />
-
-        </h2>
-
-        <h3>
-           {{ partner.birth_date }} {{ partner.birth_time }}, {{ partner.birth_place
-          }}
-        </h3>
-
-        <h4>
-
-          <font-awesome-icon icon="moon" />
-           {{ zodiacs[partner.moon] }} {{ partner.moon }}
-        </h4>
-
-        <h4>
-
-          <font-awesome-icon icon="meteor" />
-           {{ partner.naksatra }}
-        </h4>
-
-        <ul>
-
-          <li>
-
-            <span>{{ parseInt((partner.points / maxPoints) * 100) }}%</span>
-             ({{ partner.points }} points)
-          </li>
-
-          <li>
-
-            <ul id="additional">
-
-              <li :class="{ inRange: !veda(partner.naksatra) }">
-
-                <h5>Veda</h5>
-
-                <span>
-
-                  <font-awesome-icon
-                    :icon="
-                      veda(partner.naksatra)
-                        ? 'skull-crossbones'
-                        : 'check-circle'
-                    "
-                  />
-
-                </span>
-                 {{ getNaksatraName(targetPerson.naksatra) }}
-                <br />
-                 {{ getNaksatraName(partner.naksatra) }}
-              </li>
-
-              <li :class="{ inRange: inMoonRange(partner.stridirgha) }">
-
-                <h5>Stridirgha</h5>
-
-                <span>{{ zodiacs[partner.moon] }}</span>
-                 {{ partner.moon }}
-                <br />
-                 {{ partner.stridirgha }}
-              </li>
-
-              <li
-                :class="[
-                  { inRange: !partner.rashi || partner.rashi == 6 },
-                  { nice: partner.rashi < 0 }, // TODO is it like this?
-                ]"
-              >
-
-                <h5>? Rashi</h5>
-
-                <span>
-
-                  <font-awesome-icon
-                    :icon="
-                      !partner.rashi || partner.rashi == 6
-                        ? 'check-circle'
-                        : 'exclamation-circle'
-                    "
-                  />
-
-                </span>
-                 {{ rashi(partner.rashi) }}
-              </li>
-
-              <li :class="{ inRange: !rajju(partner.naksatra) }">
-
-                <h5>Rajju</h5>
-
-                <span>
-
-                  <font-awesome-icon
-                    :icon="
-                      rajjuIcons[rajju(partner.naksatra)]
-                        ? rajjuIcons[rajju(partner.naksatra)]
-                        : 'check-circle'
-                    "
-                  />
-
-                </span>
-                 {{ rajju(partner.naksatra) ? rajju(partner.naksatra) : 'OK' }}
-              </li>
-
-            </ul>
-
-          </li>
-
-          <li :class="{ outRange: isAgeDifferenceBig(partner.age_difference) }">
-
-            <span>{{ partner.age_difference }}</span>
-             év korkülönbség
-          </li>
-
-        </ul>
-
-        <Stars :points="partner.points" />
-
-        <!-- TODO here conside points + 4 additional -->
-
-      </section>
-
-    </div>
-
-  </div>
-
-</template>
-
 <script>
   import axios from 'axios'
   import Stars from '@/components/Stars.vue'
@@ -219,13 +15,13 @@
         rajjus: {
           // TODO ezek a naksatra nevek szerepelnek a chart.json-ban 210517-én
           /* ha mindkettő
-            láb - állandó vándorlás - walking
-            csípő - szegénység - money-bill-alt
-            köldök - gyerek elvesztése - baby
-            nyak - feleség halála - female
-            fej - férj halála - male
-          Exception: If Rasi, Graha Maitra, Tara and Mahendra are present then Rajju need not be considered.
-        */
+                  láb - állandó vándorlás - walking
+                  csípő - szegénység - money-bill-alt
+                  köldök - gyerek elvesztése - baby
+                  nyak - feleség halála - female
+                  fej - férj halála - male
+                Exception: If Rasi, Graha Maitra, Tara and Mahendra are present then Rajju need not be considered.
+              */
           // TODO Purva Phalguni is missing
           Anuradha: 'csipő',
           Ardra: 'nyak',
@@ -445,6 +241,173 @@
   }
 </script>
 
+<template>
+  <div>
+    <div class="row">
+      <h3>Name</h3>
+
+      <router-link to="addPerson">
+        <font-awesome-icon icon="user-plus" />
+      </router-link>
+    </div>
+
+    <select @change="getAnalysis" v-model="personId">
+      <option v-for="person in people" :key="person.id" :value="person.id">
+        {{ person.name }} ({{ person.birth_date.substring(0, 4) }})
+      </option>
+    </select>
+
+    <article v-show="targetPerson">
+      <h1>{{ targetPerson ? targetPerson.name : '' }}</h1>
+
+      <h2>
+        {{
+          targetPerson
+            ? `${targetPerson.birth_date}, ${targetPerson.birth_time},
+        ${targetPerson.birth_place}`
+            : ''
+        }}
+      </h2>
+
+      <font-awesome-icon icon="sync" spin v-show="loading" />
+
+      <h3
+        class="pointer"
+        v-show="!loading"
+        @click="moonData(targetPerson)"
+        title="Get Moon Data"
+      >
+        <font-awesome-icon icon="moon" />
+        {{ targetPerson ? zodiacs[targetPerson.moon] : '' }}
+        {{ targetPerson ? targetPerson.moon : '' }}
+      </h3>
+
+      <h3
+        class="pointer"
+        v-show="!loading"
+        @click="moonData(targetPerson)"
+        title="Get Moon Data"
+      >
+        <font-awesome-icon icon="meteor" />
+        {{ targetPerson ? targetPerson.naksatra : '' }}
+      </h3>
+
+      <div class="info">
+        <font-awesome-icon icon="info" />
+
+        <textarea v-model="targetPersonInfo"></textarea>
+
+        <font-awesome-icon icon="save" @click="saveInfo" />
+      </div>
+    </article>
+
+    <div>
+      <section v-for="partner in possiblePartners" :key="partner.id">
+        <h2>
+          {{ partner.name }}
+          <font-awesome-icon icon="link" @click="analize(partner.id)" />
+        </h2>
+
+        <h3>
+          {{ partner.birth_date }} {{ partner.birth_time }},
+          {{ partner.birth_place }}
+        </h3>
+
+        <h4>
+          <font-awesome-icon icon="moon" />
+          {{ zodiacs[partner.moon] }} {{ partner.moon }}
+        </h4>
+
+        <h4>
+          <font-awesome-icon icon="meteor" />
+          {{ partner.naksatra }}
+        </h4>
+
+        <ul>
+          <li>
+            <span>{{ parseInt((partner.points / maxPoints) * 100) }}%</span>
+            ({{ partner.points }} points)
+          </li>
+
+          <li>
+            <ul id="additional">
+              <li :class="{ inRange: !veda(partner.naksatra) }">
+                <h5>Veda</h5>
+
+                <span>
+                  <font-awesome-icon
+                    :icon="
+                      veda(partner.naksatra)
+                        ? 'skull-crossbones'
+                        : 'check-circle'
+                    "
+                  />
+                </span>
+                {{ getNaksatraName(targetPerson.naksatra) }}
+                <br />
+                {{ getNaksatraName(partner.naksatra) }}
+              </li>
+
+              <li :class="{ inRange: inMoonRange(partner.stridirgha) }">
+                <h5>Stridirgha</h5>
+
+                <span>{{ zodiacs[partner.moon] }}</span>
+                {{ partner.moon }}
+                <br />
+                {{ partner.stridirgha }}
+              </li>
+
+              <li
+                :class="[
+                  { inRange: !partner.rashi || partner.rashi == 6 },
+                  { nice: partner.rashi < 0 }, // TODO is it like this?
+                ]"
+              >
+                <h5>? Rashi</h5>
+
+                <span>
+                  <font-awesome-icon
+                    :icon="
+                      !partner.rashi || partner.rashi == 6
+                        ? 'check-circle'
+                        : 'exclamation-circle'
+                    "
+                  />
+                </span>
+                {{ rashi(partner.rashi) }}
+              </li>
+
+              <li :class="{ inRange: !rajju(partner.naksatra) }">
+                <h5>Rajju</h5>
+
+                <span>
+                  <font-awesome-icon
+                    :icon="
+                      rajjuIcons[rajju(partner.naksatra)]
+                        ? rajjuIcons[rajju(partner.naksatra)]
+                        : 'check-circle'
+                    "
+                  />
+                </span>
+                {{ rajju(partner.naksatra) ? rajju(partner.naksatra) : 'OK' }}
+              </li>
+            </ul>
+          </li>
+
+          <li :class="{ outRange: isAgeDifferenceBig(partner.age_difference) }">
+            <span>{{ partner.age_difference }}</span>
+            év korkülönbség
+          </li>
+        </ul>
+
+        <Stars :points="partner.points" />
+
+        <!-- TODO here conside points + 4 additional -->
+      </section>
+    </div>
+  </div>
+</template>
+
 <style scoped>
   .row {
     display: flex;
@@ -585,4 +548,3 @@
     }
   }
 </style>
-
