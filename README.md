@@ -1,27 +1,13 @@
 # compatibility-ranker
 
-## Project setup
+## Generate chart data
 
-```
-npm install
-```
+It is already generated, but if it is neaded to regenerate in the `data` folder execute
 
-### Compiles and hot-reloads for development
-
-```
-npm run serve
+```bash
+php ./generateCompatibilityChart.php
 ```
 
-### Compiles and minifies for production
+It will read the `nakstras.csv` file and generate the `chart.json` file.
 
-```
-npm run build
-```
-
-## Backend
-
-```
-composer i
-```
-
-Requires PHP 7 docker
+Executing `node testChart.js` will run a few tests and check if the genertaed data i correct.
