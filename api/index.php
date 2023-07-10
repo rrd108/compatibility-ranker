@@ -1,14 +1,14 @@
 <?php
+
 namespace CompatibilityRanker;
 
-use Branca\Branca;
 use PDO;
 
 $isAuthenticated = false;
 
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -36,8 +36,8 @@ if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
 if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
   $token = str_replace('ApiKey ', '', $_SERVER['HTTP_AUTHORIZATION']);
 
-  $branca = new Branca($secrets['salt']);
-  $userEmail = $branca->decode($token);
+  //$branca = new Branca($secrets['salt']);
+  $userEmail = base64_decode($token);
 
   $isAuthenticated = in_array($userEmail, array_keys($secrets['users']));
   if (!$isAuthenticated) {
