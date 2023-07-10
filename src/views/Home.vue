@@ -1,13 +1,18 @@
 <template>
+
   <div>
+
     <Login v-if="!token" @token="tokenReceived" />
+
     <Ranker v-if="token" :token="token" />
+
   </div>
+
 </template>
 
 <script>
-import Login from '@/components/Login'
-import Ranker from '@/components/Ranker'
+import Login from '@/components/Login.vue'
+import Ranker from '@/components/Ranker.vue'
 
 export default {
   name: 'Home',
@@ -28,3 +33,4 @@ export default {
   }
 }
 </script>
+
