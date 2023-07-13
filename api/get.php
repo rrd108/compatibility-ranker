@@ -19,10 +19,10 @@ function isSameNaksatras($naksatra1, $naksatra2, $naksatraNames)
   }
 
   preg_match('/([a-zA-z ]*),?.*(\d)/', $naksatra1, $matches);
-  $naksatra1 = trim($matches[1]) ?? $naksatra1;
+  $naksatra1 = isset($matches[1]) ? trim($matches[1]) : $naksatra1;
   $pada1 = $matches[2] ?? null;
   preg_match('/([a-zA-z ]*),?.*(\d)/', $naksatra2, $matches);
-  $naksatra2 = trim($matches[1]) ?? $naksatra2;
+  $naksatra2 = isset($matches[1]) ? trim($matches[1]) : $naksatra2;
   $pada2 = $matches[2] ?? null;
 
   if (
@@ -108,20 +108,20 @@ if ($isAuthenticated) {
           ) {
             $possiblePartners[$i]['points'] = $chartData->point;
           }
-
-          $personMoonPosition = array_search($person['moon'], $zodiacs);
-          $possiblePartnerMoonPosition = array_search($possiblePartner['moon'], $zodiacs);
-          // female - male
-          if ($selectedPersonSex == 'girl') {
-            $moonPositionDifference = $personMoonPosition - $possiblePartnerMoonPosition;
-          }
-          if ($selectedPersonSex == 'boy') {
-            $moonPositionDifference =  $possiblePartnerMoonPosition - $personMoonPosition;
-          }
-          // male - female
-          $possiblePartners[$i]['rashi'] = -$moonPositionDifference;
-          $possiblePartners[$i]['stridirgha'] = $moonPositionDifference > 0 ? $moonPositionDifference : 12 + $moonPositionDifference;
         }
+
+        $personMoonPosition = array_search($person['moon'], $zodiacs);
+        $possiblePartnerMoonPosition = array_search($possiblePartner['moon'], $zodiacs);
+        // female - male
+        if ($selectedPersonSex == 'girl') {
+          $moonPositionDifference = $personMoonPosition - $possiblePartnerMoonPosition;
+        }
+        if ($selectedPersonSex == 'boy') {
+          $moonPositionDifference =  $possiblePartnerMoonPosition - $personMoonPosition;
+        }
+        // male - female
+        $possiblePartners[$i]['rashi'] = -$moonPositionDifference;
+        $possiblePartners[$i]['stridirgha'] = $moonPositionDifference > 0 ? $moonPositionDifference : 12 + $moonPositionDifference;
       }
     }
 
