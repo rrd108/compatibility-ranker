@@ -119,8 +119,8 @@
 
     methods: {
       analize(id) {
-        personId = id
-        getAnalysis()
+        this.personId = id
+        this.getAnalysis()
       },
       getAnalysis() {
         axios
