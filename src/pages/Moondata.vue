@@ -1,25 +1,25 @@
 <template>
-
   <div v-if="token">
-
     <h1>Naksatra</h1>
 
     <ul>
-
       <li v-for="person in people" :key="person.id">
-
         <h2>
-
           <font-awesome-icon
             :icon="
-              person.sex == 'férfi' || person.sex == 'male' ? 'male' : 'female'
+              person.sex == 'férfi' ||
+              person.sex == 'ferfi' ||
+              person.sex == 'male'
+                ? 'male'
+                : 'female'
             "
           />
-           {{person.name}}
+          {{ person.name }}
         </h2>
 
         <p>
-           {{person.birth_date}} {{person.birth_time}} {{person.birth_place}}
+          {{ person.birth_date }} {{ person.birth_time }}
+          {{ person.birth_place }}
         </p>
 
         <font-awesome-icon icon="sync" spin v-show="show[person.id]" />
@@ -29,19 +29,14 @@
           title="Get Moon Data"
           v-show="!show[person.id]"
         >
-
           <font-awesome-icon icon="moon" />
-           {{person.moon}}
+          {{ person.moon }}
           <font-awesome-icon icon="meteor" />
-           {{person.naksatra}}
+          {{ person.naksatra }}
         </span>
-
       </li>
-
     </ul>
-
   </div>
-
 </template>
 
 <script>
@@ -105,4 +100,3 @@
     cursor: pointer;
   }
 </style>
-

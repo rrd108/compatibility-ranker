@@ -146,8 +146,10 @@
       },
       isAgeDifferenceBig(ageDifference) {
         // the man should be older maximum 10 years or younger maximum 4 years
+        console.log(ageDifference)
         if (
           this.targetPerson.sex == 'férfi' ||
+          this.targetPerson.sex == 'ferfi' ||
           this.targetPerson.sex == 'male'
         ) {
           if (ageDifference >= -10 && ageDifference <= 4) {
