@@ -1,4 +1,5 @@
 <?php
+
 function getPlace($place)
 {
   $client = new \GuzzleHttp\Client();
@@ -17,25 +18,35 @@ function getNaksatra($person, $place)
     $ampm = 'pm';
     $hour -= 12;
   }
+  if ($hour == 0) {
+    $ampm = 'am';
+    $hour = 12;
+  }
 
   $formData = [
+    'name' => $person['name'],
+    'gender' => in_array($person['sex'], ['no', 'nő', 'female']) ? 'female' : 'male',
     'year' => substr($person['birth_date'], 0, 4),
-    'month' => (int) substr($person['birth_date'], 5, 2),
-    'day' => (int) substr($person['birth_date'], 8, 2),
-    'hour' => (int) $hour,
-    'min' => (int) substr($person['birth_time'], 3, 2),
+    'month' => substr($person['birth_date'], 5, 2),
+    'day' => substr($person['birth_date'], 8, 2),
+    'hour' => $hour,
+    'min' => substr($person['birth_time'], 3, 2),
     'apm' => $ampm,
-    'la' => 'en',
     'location' => $place[1] . ', ' . $place[2] . ', ' . $place[3],
     'loc' => $place[0],
-    'location-change' => 1,
-    'p' => 1
+    'location-change' => '1',
   ];
 
   $response = $client->request('POST', 'https://www.prokerala.com/astrology/nakshatra-finder/', [
     'form_params' => $formData
   ]);
-  preg_match('/<span class="t-large b">(.*)<sup>/', $response->getBody()->getContents(), $matches);
+
+  $response = $response->getBody()->getContents();
+
+  preg_match('/<span class="t-large b">(.*)<sup>/', $response, $matches);
+  /*$fp = fopen('./logs.log', 'a');
+  fwrite($fp, $matches[1] . "\n");
+  fclose($fp);*/
   return $matches[1];
 }
 
@@ -111,14 +122,14 @@ if ($isAuthenticated) {
   }
 
   if (is_numeric($_GET['moonData'])) {
-    $stmt = $pdo->prepare("SELECT id, name, birth_date, birth_time, birth_place, naksatra, moon
+    $stmt = $pdo->prepare("SELECT id, name, sex, birth_date, birth_time, birth_place, naksatra, moon
       FROM devs
       WHERE id = ?");
     $stmt->execute([$_GET['moonData']]);
     $person = $stmt->fetch(PDO::FETCH_ASSOC);
     $place = getPlace($person['birth_place']);
     $naksatra = getNaksatra($person, $place);
-    $moon = getMoon($person, $place);
+    $moon = getMoon($person, $person['birth_place']);
   }
 
   echo json_encode(['naksatra' => $naksatra, 'moon' => $moon]);
