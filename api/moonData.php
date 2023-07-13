@@ -1,5 +1,6 @@
 <?php
-function getPlace($place) {
+function getPlace($place)
+{
   $client = new \GuzzleHttp\Client();
   $response = $client->request('GET', 'https://www.prokerala.com/astrology/search.php?index=0&q=' . $place);
   $place = json_decode($response->getBody());
@@ -7,7 +8,8 @@ function getPlace($place) {
   return $place;
 }
 
-function getNaksatra($person, $place) {
+function getNaksatra($person, $place)
+{
   $client = new \GuzzleHttp\Client();
   $ampm = 'am';
   $hour = substr($person['birth_time'], 0, 2);
@@ -33,11 +35,12 @@ function getNaksatra($person, $place) {
   $response = $client->request('POST', 'https://www.prokerala.com/astrology/nakshatra-finder/', [
     'form_params' => $formData
   ]);
-  preg_match('/<span class="t-large b">(.*)<sup>/', $response->getBody(), $matches);
+  preg_match('/<span class="t-large b">(.*)<sup>/', $response->getBody()->getContents(), $matches);
   return $matches[1];
 }
 
-function getMoon($person, $place) {
+function getMoon($person, $place)
+{
   $client = new \GuzzleHttp\Client(['cookies' => true, 'version' => 2.0]);
   $response = $client->request('GET', 'https://cafeastrology.com/whats-my-moon-sign.html');
 
@@ -64,14 +67,16 @@ function getMoon($person, $place) {
 
   $response = $client->request(
     'POST',
-    'https://cafeastrology.com/wp-admin/admin-ajax.php', [
+    'https://cafeastrology.com/wp-admin/admin-ajax.php',
+    [
       'form_params' => $formData,
       'headers' => [
         'Host' => 'cafeastrology.com',
         'user-agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 ',
         'accept' => '*/*'
       ]
-    ]);
+    ]
+  );
   $response = json_decode($response->getBody());
 
   $formData['zp_offset_geo'] = $response->offset_geo;
@@ -79,22 +84,23 @@ function getMoon($person, $place) {
 
   $response = $client->request(
     'POST',
-    'https://cafeastrology.com/wp-admin/admin-ajax.php', [
+    'https://cafeastrology.com/wp-admin/admin-ajax.php',
+    [
       'form_params' => $formData,
       'headers' => [
         'Host' => 'cafeastrology.com',
         'user-agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 ',
         'accept' => '*/*'
       ]
-    ]);
+    ]
+  );
 
   preg_match('/<p>You have Moon in ([^.]*)\./', $response->getBody(), $matches);
   return $matches[1];
 }
 
 if ($isAuthenticated) {
-
-  if ($_GET['date'] && $_GET['time'] && $_GET['place']) {
+  if (isset($_GET['date']) && isset($_GET['time']) && isset($_GET['place'])) {
     $person = [
       'birth_date' => $_GET['date'],
       'birth_time' => $_GET['time'],
@@ -114,7 +120,6 @@ if ($isAuthenticated) {
     $naksatra = getNaksatra($person, $place);
     $moon = getMoon($person, $place);
   }
-
 
   echo json_encode(['naksatra' => $naksatra, 'moon' => $moon]);
 

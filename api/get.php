@@ -4,6 +4,46 @@ namespace CompatibilityRanker;
 
 use PDO;
 
+function tokenize($input)
+{
+  $input = str_replace(',', '', $input);
+  $input = str_replace(' ', '', $input);
+  $input = strtolower($input);
+  return $input;
+}
+
+function isSameNaksatras($naksatra1, $naksatra2, $naksatraNames)
+{
+  if (tokenize($naksatra1) == tokenize($naksatra2)) {
+    return true;
+  }
+
+  preg_match('/([a-zA-z ]*),?.*(\d)/', $naksatra1, $matches);
+  $naksatra1 = trim($matches[1]) ?? $naksatra1;
+  $pada1 = $matches[2] ?? null;
+  preg_match('/([a-zA-z ]*),?.*(\d)/', $naksatra2, $matches);
+  $naksatra2 = trim($matches[1]) ?? $naksatra2;
+  $pada2 = $matches[2] ?? null;
+
+  if (
+    isset($naksatraNames->{$naksatra1})
+    && $naksatraNames->{$naksatra1} == $naksatra2
+    && $pada1 == $pada2
+  ) {
+    return true;
+  }
+
+  if (
+    isset($naksatraNames->{$naksatra2})
+    && $naksatraNames->{$naksatra2} == $naksatra1
+    && $pada1 == $pada2
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
 if ($isAuthenticated) {
   if (isset($_GET['moonData'])) {
     require './moonData.php';
@@ -26,6 +66,9 @@ if ($isAuthenticated) {
     $chart = file_get_contents('../data/chart.json');
     $chart = json_decode($chart);
 
+    $naksatraNames = file_get_contents('../data/naksatraNames.json');
+    $naksatraNames = json_decode($naksatraNames);
+
     $stmt = $pdo->prepare("SELECT id, name, sex, YEAR(birth_date) AS birth_year, naksatra, moon
       FROM devs
       WHERE id = ?");
@@ -33,13 +76,13 @@ if ($isAuthenticated) {
     $person = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // select everybody for the other sex
-    $sex = in_array($person['sex'], ['no', 'nő', 'female']) ? 'girl' : 'boy';
+    $selectedPersonSex = in_array($person['sex'], ['no', 'nő', 'female']) ? 'girl' : 'boy';
 
-    $oppositeSex = ($sex == 'girl') ? '("férfi", "male")' : '("nő", "female")';
+    $oppositeSex = ($selectedPersonSex == 'girl') ? '("férfi", "male")' : '("no", "nő", "female")';
     $stmt = $pdo->prepare("SELECT id, name, birth_date, birth_time, birth_place, (" . $person['birth_year'] . " - YEAR(birth_date)) AS age_difference, naksatra, moon
       FROM devs
       WHERE sex IN $oppositeSex
-      AND (inactive = '' OR inactive IS NULL)");
+      AND (inactive = 0 OR inactive IS NULL)");
     $stmt->execute();
     $possiblePartners = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -48,26 +91,31 @@ if ($isAuthenticated) {
 
       if ($possiblePartner['naksatra'] && $possiblePartner['moon']) {
         // find the chart entry for this combination
-        foreach ($chart as $points) {
+
+        foreach ($chart as $chartData) {
           // points
-          if ($sex == 'girl') {
-            if ($points->girl == $person['naksatra'] && $points->boy == $possiblePartner['naksatra']) {
-              $possiblePartners[$i]['points'] = $points->point;
-            }
+          if (
+            $selectedPersonSex == 'girl'
+            && isSameNaksatras($chartData->girl, $person['naksatra'], $naksatraNames)
+            && isSameNaksatras($chartData->boy, $possiblePartner['naksatra'], $naksatraNames)
+          ) {
+            $possiblePartners[$i]['points'] = $chartData->point;
           }
-          if ($sex == 'boy') {
-            if ($points->girl == $possiblePartner['naksatra'] && $points->boy == $person['naksatra']) {
-              $possiblePartners[$i]['points'] = $points->point;
-            }
+          if (
+            $selectedPersonSex == 'boy'
+            && isSameNaksatras($chartData->girl, $possiblePartner['naksatra'], $naksatraNames)
+            && isSameNaksatras($chartData->boy, $person['naksatra'], $naksatraNames)
+          ) {
+            $possiblePartners[$i]['points'] = $chartData->point;
           }
 
           $personMoonPosition = array_search($person['moon'], $zodiacs);
           $possiblePartnerMoonPosition = array_search($possiblePartner['moon'], $zodiacs);
           // female - male
-          if ($sex == 'girl') {
+          if ($selectedPersonSex == 'girl') {
             $moonPositionDifference = $personMoonPosition - $possiblePartnerMoonPosition;
           }
-          if ($sex == 'boy') {
+          if ($selectedPersonSex == 'boy') {
             $moonPositionDifference =  $possiblePartnerMoonPosition - $personMoonPosition;
           }
           // male - female

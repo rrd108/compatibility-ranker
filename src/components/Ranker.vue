@@ -254,6 +254,7 @@
     <select @change="getAnalysis" v-model="personId">
       <option v-for="person in people" :key="person.id" :value="person.id">
         {{ person.name }} ({{ person.birth_date.substring(0, 4) }})
+        {{ person.naksatra }} {{ person.moon }}
       </option>
     </select>
 

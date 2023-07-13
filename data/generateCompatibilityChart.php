@@ -8,10 +8,10 @@ $naksatras = $chart = [];
 
 $line = 0;
 $matrixSize = 108;
-$delimiter = ',';
+$delimiter = ';';
 
 // create a total matrix
-if (($handle = fopen('nakshatras.csv', 'r')) !== FALSE) {
+if (($handle = fopen('naksatras.csv', 'r')) !== FALSE) {
   while (($rowDdata = fgetcsv($handle, 1200, $delimiter)) !== FALSE) {
 
     if ($line <= $matrixSize) {
@@ -26,11 +26,11 @@ if (($handle = fopen('nakshatras.csv', 'r')) !== FALSE) {
 
       if ($line >= 1) {
         foreach ($rowDdata as $i => $data) {
-          if ($i > 1 && $i <= $matrixSize) {
+          if ($i >= 1 && $i <= $matrixSize) {
             $chart[] = [
               'girl' => $naksatras[$i],
               'boy' => $rowDdata[0],
-              'point' => $data
+              'point' => str_replace(',', '.', $data)
             ];
           }
         }
