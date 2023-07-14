@@ -5,6 +5,7 @@
   import RankerPartnerAnalysis from '@/components/RankerPartnerAnalysis.vue'
   import Stars from './Stars.vue'
   import PersonAnalysis from '@/interfaces/PersonAnalysis'
+  import isMale from '@/composables/useIsMale'
 
   const props = defineProps({
     partner: Object as PropType<PersonAnalysis>,
@@ -14,20 +15,12 @@
 
   const isAgeDifferenceBig = (ageDifference: number) => {
     // the man should be older maximum 10 years or younger maximum 4 years
-    if (
-      store.targetPerson.sex == 'férfi' ||
-      store.targetPerson.sex == 'ferfi' ||
-      store.targetPerson.sex == 'male'
-    ) {
+    if (isMale(store.targetPerson.sex)) {
       if (ageDifference >= -10 && ageDifference <= 4) {
         return false
       }
     }
-    if (
-      store.targetPerson.sex == 'nő' ||
-      store.targetPerson.sex == 'no' ||
-      store.targetPerson.sex == 'female'
-    ) {
+    if (!isMale(store.targetPerson.sex)) {
       if (ageDifference >= -4 && ageDifference <= 10) {
         return false
       }
@@ -37,44 +30,46 @@
 </script>
 
 <template>
-  <h2>
-    {{ getIcon(partner.sex) }} {{ partner.name }}
-    <font-awesome-icon icon="link" @click="analize(partner.id)" />
-  </h2>
+  <div v-if="partner">
+    <h2>
+      {{ getIcon(partner.sex) }} {{ partner.name }}
+      <font-awesome-icon icon="link" @click="TODOanalize(partner.id)" />
+    </h2>
 
-  <h3>
-    {{ partner.birth_date }} {{ partner.birth_time }},
-    {{ partner.birth_place }}
-  </h3>
+    <h3>
+      {{ partner.birth_date }} {{ partner.birth_time }},
+      {{ partner.birth_place }}
+    </h3>
 
-  <h4>
-    <font-awesome-icon icon="moon" />
-    {{ store.zodiacs[partner.moon] }} {{ partner.moon }}
-  </h4>
+    <h4>
+      <font-awesome-icon icon="moon" />
+      {{ store.zodiacs[partner.moon] }} {{ partner.moon }}
+    </h4>
 
-  <h4>
-    <font-awesome-icon icon="meteor" />
-    {{ partner.naksatra }}, {{ partner.pada }}
-    <small class="outRange" v-if="!store.naksatras.includes(partner.naksatra)"
-      >Unknown Naksatra</small
-    >
-  </h4>
+    <h4>
+      <font-awesome-icon icon="meteor" />
+      {{ partner.naksatra }}, {{ partner.pada }}
+      <small class="outRange" v-if="!store.naksatras.includes(partner.naksatra)"
+        >Unknown Naksatra</small
+      >
+    </h4>
 
-  <ul>
-    <li>
-      <h6>{{ Math.floor((partner.points / store.maxPoints) * 100) }}%</h6>
-      ({{ partner.points }} points)
-    </li>
-    <li>
-      <RankerPartnerAnalysis :partner="partner" />
-    </li>
-    <li :class="{ outRange: isAgeDifferenceBig(partner.age_difference) }">
-      <h6>{{ partner.age_difference }}</h6>
-      év korkülönbség
-    </li>
-  </ul>
+    <ul>
+      <li>
+        <h6>{{ Math.floor((partner.points / store.maxPoints) * 100) }}%</h6>
+        ({{ partner.points }} points)
+      </li>
+      <li>
+        <RankerPartnerAnalysis :partner="partner" />
+      </li>
+      <li :class="{ outRange: isAgeDifferenceBig(partner.age_difference) }">
+        <h6>{{ partner.age_difference }}</h6>
+        év korkülönbség
+      </li>
+    </ul>
 
-  <Stars :points="partner.points" />
+    <Stars :points="partner.points" />
+  </div>
 </template>
 
 <style scoped>

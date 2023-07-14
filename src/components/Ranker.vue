@@ -3,7 +3,6 @@
   import PersonAnalysis from '@/interfaces/PersonAnalysis'
   import PersonMoonData from '@/interfaces/PersonMoonData'
   import axios from 'axios'
-  import Rajjus from '@/interfaces/Rajjus'
   import RankerPersonSelect from '@/components/RankerPersonSelect.vue'
   import RankerHeader from '@/components/RankerHeader.vue'
   import RankerPartner from '@/components/RankerPartner.vue'

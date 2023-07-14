@@ -1,13 +1,13 @@
 <script setup lang="ts">
   import { Naksatra } from '@/interfaces/Naksatra'
-  import PersonMoonData from '@/interfaces/PersonMoonData'
+  import PersonAnalysis from '@/interfaces/PersonAnalysis'
   import { useStore } from '@/store'
   import { PropType } from 'vue'
   import getIcon from '@/composables/useIcon.ts'
   import isMale from '@/composables/useIsMale'
 
   const props = defineProps({
-    partner: Object as PropType<PersonMoonData>,
+    partner: Object as PropType<PersonAnalysis>,
   })
 
   const store = useStore()
@@ -59,7 +59,7 @@
 </script>
 
 <template>
-  <ul>
+  <ul v-if="partner">
     <li :class="{ inRange: !veda(partner.naksatra) }">
       <h5
         title="A Veda a házastárs személyiségét és temperamentumát tükrözi. (Nincs kivétel)"
