@@ -8,7 +8,7 @@
     data() {
       return {
         loading: false,
-        maxPoints: 36,
+        maxPoints: 35,
         people: [],
         possiblePartners: [],
         personId: null,
