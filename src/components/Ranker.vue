@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, ref, onMounted } from 'vue'
+  import { computed, ref } from 'vue'
   import PersonAnalysis from '@/interfaces/PersonAnalysis'
   import PersonMoonData from '@/interfaces/PersonMoonData'
   import axios from 'axios'
@@ -7,7 +7,9 @@
   import Rajjus from '@/interfaces/Rajjus'
   import Vedas from '@/interfaces/Vedas'
   import Zodiacs from '@/interfaces/Zodiacs'
-  import { Sex } from '@/interfaces/Person'
+  import RankerHeader from '@/components/RankerHeader.vue'
+  import getIcon from '@/composables/useIcon.ts'
+  import isMale from '@/composables/useIsMale.ts'
 
   const props = defineProps<{
     token: string
@@ -122,19 +124,20 @@
   }
 
   const loading = ref(false)
-  const people = ref<PersonMoonData[]>([])
+
   const personId = ref(0)
+  const people = ref<PersonMoonData[]>([])
+  axios
+    .get(`${import.meta.env.VITE_APP_API_URL}?names`, {
+      headers: { Authorization: `ApiKey ${props.token}` },
+    })
+    .then(response => (people.value = response.data))
+    .catch(error => console.error(error))
 
-  onMounted(() =>
-    axios
-      .get(`${import.meta.env.VITE_APP_API_URL}?names`, {
-        headers: { Authorization: `ApiKey ${props.token}` },
-      })
-      .then(response => (people.value = response.data))
-      .catch(error => console.error(error))
-  )
-
-  const getIcon = (sex: Sex) => (isMale(sex) ? '🧔' : '👰')
+  const personChanged = (id: number) => {
+    personId.value = id
+    getAnalysis()
+  }
 
   const possiblePartners = ref<PersonAnalysis[]>([])
   const getAnalysis = () => {
@@ -226,8 +229,6 @@
   // is it good like that? check in Kala
   const inMoonRange = (difference: number) => difference <= 6
 
-  const isMale = (sex: Sex) => ['férfi', 'ferfi', 'male'].includes(sex)
-
   const naksatraDistanceForStridirgha = 14
   const naksatraDistance = (partnerNaksatra: Naksatra) => {
     const manNaksatraPosition = naksatras.findIndex(naksatra =>
@@ -248,31 +249,24 @@
   }
 
   const rashi = (partnerRashi: number) => {
-    if (!partnerRashi) {
+    if (partnerRashi == 0) {
       return '='
     }
     let rashiNum = Math.abs(partnerRashi) + 1
     return `${rashiNum}/${14 - rashiNum}`
   }
+
+  const rajju = (partnerNaksatra: Naksatra) => {
+    if (rajjus[partnerNaksatra] == rajjus[targetPerson.value.naksatra]) {
+      return rajjus[partnerNaksatra]
+    }
+    return false
+  }
 </script>
 
 <template>
   <div>
-    <div class="row">
-      <h3>Name</h3>
-
-      <router-link to="addPerson">
-        <font-awesome-icon icon="user-plus" />
-      </router-link>
-    </div>
-
-    <select @change="getAnalysis" v-model="personId">
-      <option v-for="person in people" :key="person.id" :value="person.id">
-        {{ getIcon(person.sex) }}
-        {{ person.name }} ({{ person.birth_date.substring(0, 4) }})
-        {{ person.naksatra }}, {{ person.pada }} - {{ person.moon }}
-      </option>
-    </select>
+    <RankerHeader :people="people" @personChanged="personChanged" />
 
     <article v-if="targetPerson">
       <h1>{{ getIcon(targetPerson.sex) }} {{ targetPerson.name }}</h1>
@@ -419,7 +413,7 @@
                 <h5
                   title="A Rasi a házastárs karrierjét és anyagi helyzetét tükrözi"
                 >
-                  ? Rashi
+                  TODO Rashi
                 </h5>
 
                 {{ getIcon(targetPerson.sex) }} {{ targetPerson.moon }}
@@ -436,6 +430,25 @@
                 </span>
                 {{ rashi(partner.rashi) }}
               </li>
+
+              <li :class="{ inRange: !rajju(partner.naksatra) }">
+                <h5
+                  title="A Rajju a házastárs szerelmi életét és kapcsolatait tükrözi"
+                >
+                  Rajju
+                </h5>
+
+                <span>
+                  <font-awesome-icon
+                    :icon="
+                      rajjuIcons[rajju(partner.naksatra)]
+                        ? rajjuIcons[rajju(partner.naksatra)]
+                        : 'check-circle'
+                    "
+                  />
+                </span>
+                {{ rajju(partner.naksatra) ? rajju(partner.naksatra) : 'OK' }}
+              </li>
             </ul>
           </li>
         </ul>
@@ -445,21 +458,6 @@
 </template>
 
 <style scoped>
-  .row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 2rem;
-  }
-  .row svg {
-    cursor: pointer;
-  }
-  select {
-    padding: 0.3rem 0.5rem;
-    width: 100%;
-    position: sticky;
-    top: 0;
-    margin: 1rem 0;
-  }
   article {
     background-color: #58a4b0;
     margin: 1rem;
