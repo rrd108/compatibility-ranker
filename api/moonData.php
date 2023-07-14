@@ -3,8 +3,9 @@
 function getPlace($place)
 {
   $client = new \GuzzleHttp\Client();
-  $response = $client->request('GET', 'https://www.prokerala.com/astrology/search.php?index=0&q=' . $place);
+  $response = $client->request('GET', 'https://www.prokerala.com/astrology/search.php?index=0&q=' . substr($place, 0, 12));
   $place = json_decode($response->getBody());
+  // TODO we can get multiple results and we have to manually select the correct one
   $place = explode('|', $place[0]);
   return $place;
 }
