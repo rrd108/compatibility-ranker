@@ -7,7 +7,7 @@
   import Rajjus from '@/interfaces/Rajjus'
   import Vedas from '@/interfaces/Vedas'
   import Zodiacs from '@/interfaces/Zodiacs'
-  import RankerHeader from '@/components/RankerHeader.vue'
+  import RankerPersonSelect from '@/components/RankerPersonSelect.vue'
   import getIcon from '@/composables/useIcon.ts'
   import isMale from '@/composables/useIsMale.ts'
 
@@ -266,7 +266,7 @@
 
 <template>
   <div>
-    <RankerHeader :people="people" @personChanged="personChanged" />
+    <RankerPersonSelect :people="people" @personChanged="personChanged" />
 
     <article v-if="targetPerson">
       <h1>{{ getIcon(targetPerson.sex) }} {{ targetPerson.name }}</h1>
