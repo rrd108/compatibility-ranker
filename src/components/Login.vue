@@ -1,37 +1,23 @@
 <template>
-
   <div>
-
     <form @submit.prevent="login">
-
       <label for="user">
-
         <font-awesome-icon icon="user-astronaut" />
-         User
+        User
       </label>
-
       <input type="text" name="user" v-model="user" />
-
       <label for="password">
-
         <font-awesome-icon icon="key" />
-         Pass
+        Pass
       </label>
-
       <input type="password" name="password" v-model="password" />
-
       <button type="submit">Login</button>
-
       <aside v-show="error">
-
         <font-awesome-icon icon="bomb" />
-         {{error}}
+        {{ error }}
       </aside>
-
     </form>
-
   </div>
-
 </template>
 
 <script>
@@ -99,4 +85,3 @@
     font-weight: bold;
   }
 </style>
-
