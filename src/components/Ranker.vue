@@ -1,19 +1,47 @@
 <script setup lang="ts">
-  import { computed, onMounted, ref } from 'vue'
-  import axios from 'axios'
-  import Stars from '@/components/Stars.vue'
+  import { computed, ref, onMounted } from 'vue'
   import PersonAnalysis from '@/interfaces/PersonAnalysis'
   import PersonMoonData from '@/interfaces/PersonMoonData'
+  import axios from 'axios'
+  import { Naksatra } from '@/interfaces/Naksatra'
   import Rajjus from '@/interfaces/Rajjus'
   import Vedas from '@/interfaces/Vedas'
   import Zodiacs from '@/interfaces/Zodiacs'
-  import { Naksatra } from '@/interfaces/Nakstra'
 
   const props = defineProps<{
     token: string
   }>()
 
   const maxPoints = 35
+  const naksatras = [
+    'Ashwini',
+    'Bharani',
+    'Krithika',
+    'Rohini',
+    'Mrigashirsha',
+    'Ardra',
+    'Punarvasu',
+    'Pushya',
+    'Ashlesha',
+    'Magha',
+    'Purva Phalguni',
+    'Uttara Phalguni',
+    'Hasta',
+    'Chitra',
+    'Swati',
+    'Vishaka',
+    'Anuradha',
+    'Jyeshta',
+    'Moola',
+    'Purva Ashadha',
+    'Uttara Ashadha',
+    'Shravana',
+    'Dhanishta',
+    'Shatabhisha',
+    'Purva Bhadrapada',
+    'Uttara Bhadrapada',
+    'Revati',
+  ]
   const rajjus: Rajjus = {
     // TODO ezek a naksatra nevek szerepelnek a chart.json-ban 210517-én
     /* ha mindkettő
@@ -60,9 +88,8 @@
     fej: 'male',
   }
   const vedas: Vedas = {
-    // TODO these names should be the same as in the database coming from the api call
-    // and in the compatibility chart
-    // TODO use naksatraNames.json?
+    // these naksatras must not be married together
+    // TODO these names should be the same as in the database coming from the api call and in the compatibility chart
     Ashwini: 'Jyeshta',
     Punarvasu: 'Uttara Ashadha',
     'Uttara Phalguni': 'Purva Bhadrapada',
@@ -122,11 +149,6 @@
       .catch(error => console.error(error))
   }
 
-  const analize = (id: number) => {
-    personId.value = id
-    getAnalysis()
-  }
-
   const targetPerson = computed(() =>
     people.value.find(person => person.id == personId.value)
   )
@@ -164,68 +186,6 @@
       .catch(error => console.error(error))
   }
 
-  const getNaksatraName = (naksatra: string) =>
-    naksatra.substring(0, naksatra.indexOf(',')) as Naksatra
-
-  const getNaksatraNameForVeda = (naksatra: string | undefined) =>
-    naksatra?.substring(0, naksatra.indexOf(',')) as keyof Vedas
-
-  const veda = (partnerNaksatra: Naksatra) => {
-    if (
-      vedas[getNaksatraNameForVeda(partnerNaksatra)] ==
-      getNaksatraName(targetPerson.value?.naksatra || '')
-    ) {
-      return true
-    }
-    if (
-      vedas[getNaksatraNameForVeda(targetPerson.value?.naksatra)] ==
-      getNaksatraName(partnerNaksatra)
-    ) {
-      return true
-    }
-    return false
-  }
-
-  const inMoonRange = (points: number) => points <= 6
-  const isAgeDifferenceBig = (ageDifference: number) => {
-    // the man should be older maximum 10 years or younger maximum 4 years
-    if (
-      targetPerson.value?.sex == 'férfi' ||
-      targetPerson.value?.sex == 'ferfi' ||
-      targetPerson.value?.sex == 'male'
-    ) {
-      if (ageDifference >= -10 && ageDifference <= 4) {
-        return false
-      }
-    }
-    if (
-      targetPerson.value?.sex == 'nő' ||
-      targetPerson.value?.sex == 'no' ||
-      targetPerson.value?.sex == 'female'
-    ) {
-      if (ageDifference >= -4 && ageDifference <= 10) {
-        return false
-      }
-    }
-    return true
-  }
-
-  const rajju = (partnerNaksatra: string) => {
-    if (
-      rajjus[getNaksatraName(partnerNaksatra)] ==
-      rajjus[getNaksatraName(targetPerson.value?.naksatra || '')]
-    ) {
-      return rajjus[getNaksatraName(partnerNaksatra)]
-    }
-    return false
-  }
-  const rashi = (partnerRashi: number) => {
-    if (!partnerRashi) {
-      return '='
-    }
-    let rashiNum = Math.abs(partnerRashi) + 1
-    return `${rashiNum}/${14 - rashiNum}`
-  }
   const saveInfo = () => {
     axios
       .patch(
@@ -239,6 +199,23 @@
       .then(response => console.log(response.data))
       .catch(error => console.error(error))
   }
+
+  const analize = (id: number) => {
+    personId.value = id
+    getAnalysis()
+  }
+
+  const veda = (partnerNaksatra: Naksatra) =>
+    vedas[getNaksatraNameForVeda(partnerNaksatra)] ==
+      getNaksatraName(targetPerson.value?.naksatra || '') ||
+    vedas[getNaksatraNameForVeda(targetPerson.value?.naksatra)] ==
+      getNaksatraName(partnerNaksatra)
+
+  const getNaksatraName = (naksatra: string) =>
+    naksatra.substring(0, naksatra.indexOf(',')) as Naksatra
+
+  const getNaksatraNameForVeda = (naksatra: string | undefined) =>
+    naksatra?.substring(0, naksatra.indexOf(',')) as keyof Vedas
 </script>
 
 <template>
@@ -295,7 +272,7 @@
       <div class="info">
         <font-awesome-icon icon="info" />
 
-        <textarea v-model="targetPerson?.info"></textarea>
+        <textarea>TODO {{ targetPerson?.info }}</textarea>
 
         <font-awesome-icon icon="save" @click="saveInfo" />
       </div>
@@ -321,14 +298,18 @@
         <h4>
           <font-awesome-icon icon="meteor" />
           {{ partner.naksatra }}
+          <small
+            class="outRange"
+            v-if="!naksatras.includes(getNaksatraName(partner.naksatra))"
+            >Unknown Naksatra</small
+          >
         </h4>
 
         <ul>
           <li>
-            <span>{{ Math.floor(partner.points / maxPoints) * 100 }}%</span>
+            <span>{{ Math.floor((partner.points / maxPoints) * 100) }}%</span>
             ({{ partner.points }} points)
           </li>
-
           <li>
             <ul id="additional">
               <li :class="{ inRange: !veda(partner.naksatra) }">
@@ -337,7 +318,7 @@
                 >
                   Veda
                 </h5>
-
+                {{ partner.naksatra }} / {{ targetPerson.naksatra }}
                 <span>
                   <font-awesome-icon
                     :icon="
@@ -347,78 +328,10 @@
                     "
                   />
                 </span>
-                {{ getNaksatraName(targetPerson.naksatra) }}
-                <br />
-                {{ getNaksatraName(partner.naksatra) }}
-              </li>
-
-              <li :class="{ inRange: inMoonRange(partner.stridirgha) }">
-                <h5
-                  title="A Stridirgha a házastárs élethosszát és egészségét tükrözi"
-                >
-                  Stridirgha
-                </h5>
-
-                <span>{{ zodiacs[partner.moon] }}</span>
-                {{ partner.moon }}
-                <br />
-                {{ partner.stridirgha }}
-              </li>
-
-              <li
-                :class="[
-                  { inRange: !partner.rashi || partner.rashi == 6 },
-                  { nice: partner.rashi < 0 }, // TODO is it like this?
-                ]"
-              >
-                <h5
-                  title="A Rasi a házastárs karrierjét és anyagi helyzetét tükrözi"
-                >
-                  ? Rashi
-                </h5>
-
-                <span>
-                  <font-awesome-icon
-                    :icon="
-                      !partner.rashi || partner.rashi == 6
-                        ? 'check-circle'
-                        : 'exclamation-circle'
-                    "
-                  />
-                </span>
-                {{ rashi(partner.rashi) }}
-              </li>
-
-              <li :class="{ inRange: !rajju(partner.naksatra) }">
-                <h5
-                  title="A Rajju a házastárs szerelmi életét és kapcsolatait tükrözi"
-                >
-                  Rajju
-                </h5>
-
-                <span>
-                  <font-awesome-icon
-                    :icon="
-                      rajjuIcons[rajju(partner.naksatra)]
-                        ? rajjuIcons[rajju(partner.naksatra)]
-                        : 'check-circle'
-                    "
-                  />
-                </span>
-                {{ rajju(partner.naksatra) ? rajju(partner.naksatra) : 'OK' }}
               </li>
             </ul>
           </li>
-
-          <li :class="{ outRange: isAgeDifferenceBig(partner.age_difference) }">
-            <span>{{ partner.age_difference }}</span>
-            év korkülönbség
-          </li>
         </ul>
-
-        <Stars :points="partner.points" />
-
-        <!-- TODO here conside points + 4 additional -->
       </section>
     </div>
   </div>

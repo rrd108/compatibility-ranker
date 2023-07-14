@@ -1,4 +1,4 @@
-import { Naksatra } from './Nakstra'
+import { Naksatra } from './Naksatra'
 import { Person } from './Person'
 
 export default interface PersonMoonData extends Person {
