@@ -79,7 +79,7 @@ if ($isAuthenticated) {
     $selectedPersonSex = in_array($person['sex'], ['no', 'nő', 'female']) ? 'girl' : 'boy';
 
     $oppositeSex = ($selectedPersonSex == 'girl') ? '("férfi", "male")' : '("no", "nő", "female")';
-    $stmt = $pdo->prepare("SELECT id, name, birth_date, birth_time, birth_place, (" . $person['birth_year'] . " - YEAR(birth_date)) AS age_difference, naksatra, pada, moon
+    $stmt = $pdo->prepare("SELECT id, name, sex, birth_date, birth_time, birth_place, (" . $person['birth_year'] . " - YEAR(birth_date)) AS age_difference, naksatra, pada, moon
       FROM devs
       WHERE sex IN $oppositeSex
       AND (inactive = 0 OR inactive IS NULL)");
