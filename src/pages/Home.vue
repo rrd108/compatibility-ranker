@@ -1,30 +1,18 @@
-<script>
+<script setup lang="ts">
+  import { ref } from 'vue'
   import Login from '@/components/Login.vue'
   import Ranker from '@/components/Ranker.vue'
 
-  export default {
-    name: 'Home',
-    components: {
-      Login,
-      Ranker,
-    },
-    data() {
-      return {
-        token: sessionStorage.getItem('cR'),
-      }
-    },
-    methods: {
-      tokenReceived(data) {
-        this.token = data
-        sessionStorage.setItem('cR', data)
-      },
-    },
+  const token = ref(sessionStorage.getItem('cR'))
+  const tokenReceived = (tokenString: string) => {
+    token.value = tokenString
+    sessionStorage.setItem('cR', tokenString)
   }
 </script>
 
 <template>
   <div>
-    <Login v-if="!token" @token="tokenReceived" />
+    <Login v-if="!token" @tokenReceived="tokenReceived" />
     <Ranker v-if="token" :token="token" />
   </div>
 </template>
