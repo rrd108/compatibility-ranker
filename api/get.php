@@ -69,7 +69,7 @@ if ($isAuthenticated) {
     $naksatraNames = file_get_contents('../data/naksatraNames.json');
     $naksatraNames = json_decode($naksatraNames);
 
-    $stmt = $pdo->prepare("SELECT id, name, sex, YEAR(birth_date) AS birth_year, naksatra, moon
+    $stmt = $pdo->prepare("SELECT id, name, sex, YEAR(birth_date) AS birth_year, naksatra, pada, moon
       FROM devs
       WHERE id = ?");
     $stmt->execute([$_GET['analysis']]);
@@ -79,7 +79,7 @@ if ($isAuthenticated) {
     $selectedPersonSex = in_array($person['sex'], ['no', 'nő', 'female']) ? 'girl' : 'boy';
 
     $oppositeSex = ($selectedPersonSex == 'girl') ? '("férfi", "male")' : '("no", "nő", "female")';
-    $stmt = $pdo->prepare("SELECT id, name, birth_date, birth_time, birth_place, (" . $person['birth_year'] . " - YEAR(birth_date)) AS age_difference, naksatra, moon
+    $stmt = $pdo->prepare("SELECT id, name, birth_date, birth_time, birth_place, (" . $person['birth_year'] . " - YEAR(birth_date)) AS age_difference, naksatra, pada, moon
       FROM devs
       WHERE sex IN $oppositeSex
       AND (inactive = 0 OR inactive IS NULL)");
@@ -96,15 +96,15 @@ if ($isAuthenticated) {
           // points
           if (
             $selectedPersonSex == 'girl'
-            && isSameNaksatras($chartData->girl, $person['naksatra'], $naksatraNames)
-            && isSameNaksatras($chartData->boy, $possiblePartner['naksatra'], $naksatraNames)
+            && isSameNaksatras($chartData->girl, $person['naksatra'] . ', ' . $person['pada'], $naksatraNames)
+            && isSameNaksatras($chartData->boy, $possiblePartner['naksatra'] . ', ' . $possiblePartner['pada'], $naksatraNames)
           ) {
             $possiblePartners[$i]['points'] = $chartData->point;
           }
           if (
             $selectedPersonSex == 'boy'
-            && isSameNaksatras($chartData->girl, $possiblePartner['naksatra'], $naksatraNames)
-            && isSameNaksatras($chartData->boy, $person['naksatra'], $naksatraNames)
+            && isSameNaksatras($chartData->girl, $possiblePartner['naksatra'] . ', ' . $possiblePartner['pada'], $naksatraNames)
+            && isSameNaksatras($chartData->boy, $person['naksatra'] . ', ' . $person['pada'], $naksatraNames)
           ) {
             $possiblePartners[$i]['points'] = $chartData->point;
           }
