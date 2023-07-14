@@ -1,11 +1,30 @@
 <script setup lang="ts">
   import PersonMoonData from '@/interfaces/PersonMoonData'
   import getIcon from '@/composables/useIcon.ts'
+  import moonData from '@/composables/useMoonData'
+  import { useStore } from '@/store'
+  import axios from 'axios'
 
   const props = defineProps<{
     loading: boolean
     targetPerson: PersonMoonData
   }>()
+
+  const store = useStore()
+
+  const saveInfo = () => {
+    axios
+      .patch(
+        import.meta.env.VITE_APP_API_URL,
+        {
+          id: props.targetPerson.id,
+          info: props.targetPerson.info,
+        },
+        { headers: { Authorization: `ApiKey ${store.token}` } }
+      )
+      .then(response => console.log(response.data))
+      .catch(error => console.error(error))
+  }
 </script>
 
 <template>
@@ -29,7 +48,7 @@
       title="Get Moon Data"
     >
       <font-awesome-icon icon="moon" />
-      {{ targetPerson ? zodiacs[targetPerson.moon] : '' }}
+      {{ targetPerson ? store.zodiacs[targetPerson.moon] : '' }}
       {{ targetPerson ? targetPerson.moon : '' }}
     </h3>
 
@@ -63,12 +82,28 @@
     top: 0;
   }
   h1 {
-    font-size: 1.5rem;
+    font-size: 5rem;
   }
   h2 {
-    font-size: 1.25rem;
+    font-size: 2rem;
   }
   h3 {
     font-size: 1rem;
+  }
+  div {
+    margin-top: 0.5em;
+    padding: 0.5em;
+    background-color: #fff;
+    color: #000;
+    text-align: left;
+    display: flex;
+    align-content: stretch;
+  }
+  p {
+    margin: 0.5em;
+  }
+  textarea {
+    margin: 0 0.5em;
+    width: 100%;
   }
 </style>

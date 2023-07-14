@@ -1,11 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import AppHeader from './components/AppHeader.vue'
+</script>
 
 <template>
-  <div>
-    <header>
-      <img src="./assets/logo.png" alt="logo" />
-      <h1>Compatibility Ranker</h1>
-    </header>
+  <div class="app">
+    <AppHeader />
     <main>
       <router-view />
     </main>
@@ -22,16 +21,6 @@
     font-family: 'Quicksand', sans-serif;
     background-color: #484349;
     color: #fff;
-  }
-  header {
-    display: flex;
-    justify-content: center;
-    padding: 1rem;
-    background-color: #f5ee9e;
-    color: #000;
-  }
-  header img {
-    height: 3rem;
   }
   main {
     padding: 1rem;

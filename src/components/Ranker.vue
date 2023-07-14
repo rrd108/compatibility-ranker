@@ -6,7 +6,6 @@
   import { Naksatra } from '@/interfaces/Naksatra'
   import Rajjus from '@/interfaces/Rajjus'
   import Vedas from '@/interfaces/Vedas'
-  import Zodiacs from '@/interfaces/Zodiacs'
   import RankerPersonSelect from '@/components/RankerPersonSelect.vue'
   import RankerHeader from '@/components/RankerHeader.vue'
   import getIcon from '@/composables/useIcon.ts'
@@ -108,20 +107,6 @@
     Mrigashirsha: 'Dhanishta',
     Chitra: 'Dhanishta',
   }
-  const zodiacs: Zodiacs = {
-    Aries: '♈',
-    Taurus: '♉',
-    Gemini: '♊',
-    Cancer: '♋',
-    Leo: '♌',
-    Virgo: '♍',
-    Libra: '♎',
-    Scorpio: '♏',
-    Sagittarius: '♐',
-    Capricorn: '♑',
-    Aquarius: '♒',
-    Pisces: '♓',
-  }
 
   const loading = ref(false)
 
@@ -159,20 +144,6 @@
     () =>
       people.value.find(person => person.id == personId.value) as PersonMoonData
   )
-
-  const saveInfo = () => {
-    axios
-      .patch(
-        import.meta.env.VITE_APP_API_URL,
-        {
-          id: targetPerson.value?.id,
-          info: targetPerson.value?.info,
-        },
-        { headers: { Authorization: `ApiKey ${store.token}` } }
-      )
-      .then(response => console.log(response.data))
-      .catch(error => console.error(error))
-  }
 
   const analize = (id: number) => {
     personId.value = id
@@ -240,49 +211,6 @@
       :loading="loading"
     />
 
-    <article v-if="targetPerson">
-      <h1>{{ getIcon(targetPerson.sex) }} {{ targetPerson.name }}</h1>
-
-      <h2>
-        {{
-          targetPerson
-            ? `${targetPerson.birth_date}, ${targetPerson.birth_time}, ${targetPerson.birth_place}`
-            : ''
-        }}
-      </h2>
-
-      <font-awesome-icon icon="sync" spin v-show="loading" />
-
-      <h3
-        class="pointer"
-        v-show="!loading"
-        @click="moonData(targetPerson)"
-        title="Get Moon Data"
-      >
-        <font-awesome-icon icon="moon" />
-        {{ targetPerson ? zodiacs[targetPerson.moon] : '' }}
-        {{ targetPerson ? targetPerson.moon : '' }}
-      </h3>
-
-      <h3
-        class="pointer"
-        v-show="!loading"
-        @click="moonData(targetPerson)"
-        title="Get Moon Data"
-      >
-        <font-awesome-icon icon="meteor" />
-        {{ targetPerson.naksatra }}, {{ targetPerson.pada }}
-      </h3>
-
-      <div class="info">
-        <font-awesome-icon icon="info" />
-
-        <textarea>TODO {{ targetPerson?.info }}</textarea>
-
-        <font-awesome-icon icon="save" @click="saveInfo" />
-      </div>
-    </article>
-
     <div>
       <section v-for="partner in possiblePartners" :key="partner.id">
         <h2>
@@ -297,7 +225,7 @@
 
         <h4>
           <font-awesome-icon icon="moon" />
-          {{ zodiacs[partner.moon] }} {{ partner.moon }}
+          {{ store.zodiacs[partner.moon] }} {{ partner.moon }}
         </h4>
 
         <h4>
@@ -342,7 +270,9 @@
                   Stridirgha
                 </h5>
 
-                <span title="Partner holdja">{{ zodiacs[partner.moon] }}</span>
+                <span title="Partner holdja">{{
+                  store.zodiacs[partner.moon]
+                }}</span>
                 {{ partner.moon }}
                 <br />
                 <span
@@ -448,22 +378,6 @@
     font-size: 1rem;
   }
 
-  .info {
-    margin-top: 0.5em;
-    padding: 0.5em;
-    background-color: #fff;
-    color: #000;
-    text-align: left;
-    display: flex;
-    align-content: stretch;
-  }
-  .info p {
-    margin: 0.5em;
-  }
-  .info textarea {
-    margin: 0 0.5em;
-    width: 100%;
-  }
   section {
     margin: 1rem;
     padding: 1rem;

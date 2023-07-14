@@ -1,16 +1,18 @@
 import PersonMoonData from '@/interfaces/PersonMoonData'
 import axios from 'axios'
+import { useStore } from '@/store'
 
 const moonData = (person: PersonMoonData) => {
   if (!person) return
 
-  loading.value = true
+  const store = useStore()
+  store.loading = true
   axios
     .get(`${import.meta.env.VITE_APP_API_URL}?moonData=${person.id}`, {
-      headers: { Authorization: `ApiKey ${props.token}` },
+      headers: { Authorization: `ApiKey ${store.token}` },
     })
     .then(response => {
-      loading.value = false
+      store.loading = false
       if (
         person.naksatra != response.data.naksatra ||
         person.moon != response.data.moon
@@ -25,7 +27,7 @@ const moonData = (person: PersonMoonData) => {
               naksatra: person.naksatra,
               moon: person.moon,
             },
-            { headers: { Authorization: `ApiKey ${props.token}` } }
+            { headers: { Authorization: `ApiKey ${store.token}` } }
           )
           .then(response => console.log(response.data))
           .catch(error => console.error(error))
