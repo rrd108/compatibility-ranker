@@ -364,9 +364,9 @@
                     "
                   />
                 </span>
-                {{ targetPerson.naksatra }}
+                {{ getIcon(targetPerson.sex) }} {{ targetPerson.naksatra }}
                 <br />
-                {{ partner.naksatra }}
+                {{ getIcon(partner.sex) }} {{ partner.naksatra }}
               </li>
 
               <li :class="{ inRange: inMoonRange(partner.stridirgha) }">
@@ -399,16 +399,9 @@
                   Stridirgha
                 </h5>
 
-                <small v-if="isMale(targetPerson.sex)">
-                  {{ targetPerson.naksatra }}
-                  <br />
-                  {{ partner.naksatra }}
-                </small>
-                <small v-if="!isMale(targetPerson.sex)">
-                  {{ partner.naksatra }}
-                  <br />
-                  {{ targetPerson.naksatra }}
-                </small>
+                {{ getIcon(targetPerson.sex) }} {{ targetPerson.naksatra }}
+                <br />
+                {{ getIcon(partner.sex) }} {{ partner.naksatra }}
 
                 <span
                   :title="`Az értéknek legalább ${naksatraDistanceForStridirgha}-nek kell lennie, minél nagyobb annál jobb`"
@@ -429,9 +422,9 @@
                   ? Rashi
                 </h5>
 
-                {{ targetPerson.moon }}
+                {{ getIcon(targetPerson.sex) }} {{ targetPerson.moon }}
                 <br />
-                {{ partner.moon }}
+                {{ getIcon(partner.sex) }} {{ partner.moon }}
                 <span>
                   <font-awesome-icon
                     :icon="
