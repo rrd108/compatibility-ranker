@@ -1,0 +1,16 @@
+export default interface Vedas {
+  Ashwini: 'Jyeshta'
+  Punarvasu: 'Uttara Ashadha'
+  'Uttara Phalguni': 'Purva Bhadrapada'
+  Bharani: 'Anuradha'
+  Pushya: 'Purva Ashadha'
+  Hasta: 'Shatabisha'
+  Krithika: 'Vishaka'
+  Ashlesha: 'Moola'
+  Rohini: 'Swati'
+  Magha: 'Revati'
+  Ardra: 'Shravana'
+  'Purva Phalguni': 'Uttara Bhadrapada'
+  Mrigashirsha: 'Dhanishta'
+  Chitra: 'Dhanishta'
+}

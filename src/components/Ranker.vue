@@ -1,246 +1,243 @@
-<script>
+<script setup lang="ts">
+  import { computed, onMounted, ref } from 'vue'
   import axios from 'axios'
   import Stars from '@/components/Stars.vue'
-  export default {
-    name: 'Ranker',
-    components: { Stars },
-    props: ['token'],
-    data() {
-      return {
-        loading: false,
-        maxPoints: 35,
-        people: [],
-        possiblePartners: [],
-        personId: null,
-        rajjus: {
-          // TODO ezek a naksatra nevek szerepelnek a chart.json-ban 210517-én
-          /* ha mindkettő
-                  láb - állandó vándorlás - walking
-                  csípő - szegénység - money-bill-alt
-                  köldök - gyerek elvesztése - baby
-                  nyak - feleség halála - female
-                  fej - férj halála - male
-                Exception: If Rasi, Graha Maitra, Tara and Mahendra are present then Rajju need not be considered.
-              */
-          // TODO Purva Phalguni is missing
-          Anuradha: 'csipő',
-          Ardra: 'nyak',
-          Ashlesha: 'láb',
-          Ashwini: 'láb',
-          Bharani: 'csípő',
-          Chitra: 'fej',
-          Dhanishta: 'fej',
-          Hasta: 'nyak',
-          Jyeshta: 'láb',
-          Krithika: 'köldök',
-          Magha: 'láb',
-          Mrigashirsha: 'fej',
-          Moola: 'láb',
-          Punarvasu: 'köldök',
-          'Purva Bhadrapada': 'köldök',
-          Purvashadha: 'csípő',
-          Pushya: 'csípő',
-          Revati: 'láb',
-          Rohini: 'nyak',
-          Satabhisha: 'nyak',
-          Shravana: 'nyak',
-          Swati: 'nyak',
-          'Uttara Ashadha': 'köldök',
-          'Uttara Bhadrapada': 'csípő',
-          Uttaraphalguni: 'köldök',
-          Vishaka: 'köldök',
-        },
-        rajjuIcons: {
-          láb: 'walking',
-          csípő: 'money-bill-alt',
-          köldök: 'baby',
-          nyak: 'female',
-          fej: 'male',
-        },
-        showAdd: false,
-        showEditInfo: false,
-        vedas: {
-          // TODO these names should be the same as in the database coming from the api call
-          // and in the compatibility chart
-          // TODO use naksatraNames.json?
-          Ashwini: 'Jyeshta',
-          Punarvasu: 'Uttara Ashadha',
-          'Uttara Phalguni': 'Purva Bhadrapada',
-          Bharani: 'Anuradha',
-          Pushya: 'Purva Ashadha',
-          Hasta: 'Shatabisha',
-          Krithika: 'Vishaka',
-          Ashlesha: 'Moola',
-          Rohini: 'Swati',
-          Magha: 'Revati',
-          Ardra: 'Shravana',
-          'Purva Phalguni': 'Uttara Bhadrapada',
-          Mrigashirsha: 'Dhanishta',
-          Chitra: 'Dhanishta',
-        },
-        zodiacs: {
-          Aries: '♈',
-          Taurus: '♉',
-          Gemini: '♊',
-          Cancer: '♋',
-          Leo: '♌',
-          Virgo: '♍',
-          Libra: '♎',
-          Scorpio: '♏',
-          Sagittarius: '♐',
-          Capricorn: '♑',
-          Aquarius: '♒',
-          Pisces: '♓',
-        },
+  import PersonAnalysis from '@/interfaces/PersonAnalysis'
+  import PersonMoonData from '@/interfaces/PersonMoonData'
+  import Rajjus from '@/interfaces/Rajjus'
+  import Vedas from '@/interfaces/Vedas'
+  import Zodiacs from '@/interfaces/Zodiacs'
+  import { Naksatra } from '@/interfaces/Nakstra'
+
+  const props = defineProps<{
+    token: string
+  }>()
+
+  const maxPoints = 35
+  const rajjus: Rajjus = {
+    // TODO ezek a naksatra nevek szerepelnek a chart.json-ban 210517-én
+    /* ha mindkettő
+        láb - állandó vándorlás - walking
+        csípő - szegénység - money-bill-alt
+        köldök - gyerek elvesztése - baby
+        nyak - feleség halála - female
+        fej - férj halála - male
+      Exception: If Rasi, Graha Maitra, Tara and Mahendra are present then Rajju need not be considered.
+    */
+    // TODO Purva Phalguni is missing
+    Anuradha: 'csipő',
+    Ardra: 'nyak',
+    Ashlesha: 'láb',
+    Ashwini: 'láb',
+    Bharani: 'csípő',
+    Chitra: 'fej',
+    Dhanishta: 'fej',
+    Hasta: 'nyak',
+    Jyeshta: 'láb',
+    Krithika: 'köldök',
+    Magha: 'láb',
+    Mrigashirsha: 'fej',
+    Moola: 'láb',
+    Punarvasu: 'köldök',
+    'Purva Bhadrapada': 'köldök',
+    Purvashadha: 'csípő',
+    Pushya: 'csípő',
+    Revati: 'láb',
+    Rohini: 'nyak',
+    Satabhisha: 'nyak',
+    Shravana: 'nyak',
+    Swati: 'nyak',
+    'Uttara Ashadha': 'köldök',
+    'Uttara Bhadrapada': 'csípő',
+    Uttaraphalguni: 'köldök',
+    Vishaka: 'köldök',
+  }
+  const rajjuIcons = {
+    láb: 'walking',
+    csípő: 'money-bill-alt',
+    köldök: 'baby',
+    nyak: 'female',
+    fej: 'male',
+  }
+  const vedas: Vedas = {
+    // TODO these names should be the same as in the database coming from the api call
+    // and in the compatibility chart
+    // TODO use naksatraNames.json?
+    Ashwini: 'Jyeshta',
+    Punarvasu: 'Uttara Ashadha',
+    'Uttara Phalguni': 'Purva Bhadrapada',
+    Bharani: 'Anuradha',
+    Pushya: 'Purva Ashadha',
+    Hasta: 'Shatabisha',
+    Krithika: 'Vishaka',
+    Ashlesha: 'Moola',
+    Rohini: 'Swati',
+    Magha: 'Revati',
+    Ardra: 'Shravana',
+    'Purva Phalguni': 'Uttara Bhadrapada',
+    Mrigashirsha: 'Dhanishta',
+    Chitra: 'Dhanishta',
+  }
+  const zodiacs: Zodiacs = {
+    Aries: '♈',
+    Taurus: '♉',
+    Gemini: '♊',
+    Cancer: '♋',
+    Leo: '♌',
+    Virgo: '♍',
+    Libra: '♎',
+    Scorpio: '♏',
+    Sagittarius: '♐',
+    Capricorn: '♑',
+    Aquarius: '♒',
+    Pisces: '♓',
+  }
+
+  const loading = ref(false)
+  const people = ref<PersonMoonData[]>([])
+  const personId = ref(0)
+
+  onMounted(() =>
+    axios
+      .get(`${import.meta.env.VITE_APP_API_URL}?names`, {
+        headers: { Authorization: `ApiKey ${props.token}` },
+      })
+      .then(response => (people.value = response.data))
+      .catch(error => console.error(error))
+  )
+
+  const possiblePartners = ref<PersonAnalysis[]>([])
+  const getAnalysis = () => {
+    axios
+      .get(`${import.meta.env.VITE_APP_API_URL}?analysis=${personId.value}`, {
+        headers: { Authorization: `ApiKey ${props.token}` },
+      })
+      .then(
+        response =>
+          (possiblePartners.value = response.data.sort(
+            (a: { points: number }, b: { points: number }) =>
+              b.points - a.points
+          ))
+      )
+      .catch(error => console.error(error))
+  }
+
+  const analize = (id: number) => {
+    personId.value = id
+    getAnalysis()
+  }
+
+  const targetPerson = computed(() =>
+    people.value.find(person => person.id == personId.value)
+  )
+
+  const moonData = (person: PersonMoonData | undefined) => {
+    if (!person) return
+
+    loading.value = true
+    axios
+      .get(`${import.meta.env.VITE_APP_API_URL}?moonData=${person.id}`, {
+        headers: { Authorization: `ApiKey ${props.token}` },
+      })
+      .then(response => {
+        loading.value = false
+        if (
+          person.naksatra != response.data.naksatra ||
+          person.moon != response.data.moon
+        ) {
+          person.naksatra = response.data.naksatra
+          person.moon = response.data.moon
+          axios
+            .patch(
+              import.meta.env.VITE_APP_API_URL,
+              {
+                id: person.id,
+                naksatra: person.naksatra,
+                moon: person.moon,
+              },
+              { headers: { Authorization: `ApiKey ${props.token}` } }
+            )
+            .then(response => console.log(response.data))
+            .catch(error => console.error(error))
+        }
+      })
+      .catch(error => console.error(error))
+  }
+
+  const getNaksatraName = (naksatra: string) =>
+    naksatra.substring(0, naksatra.indexOf(',')) as Naksatra
+
+  const getNaksatraNameForVeda = (naksatra: string | undefined) =>
+    naksatra?.substring(0, naksatra.indexOf(',')) as keyof Vedas
+
+  const veda = (partnerNaksatra: Naksatra) => {
+    if (
+      vedas[getNaksatraNameForVeda(partnerNaksatra)] ==
+      getNaksatraName(targetPerson.value?.naksatra || '')
+    ) {
+      return true
+    }
+    if (
+      vedas[getNaksatraNameForVeda(targetPerson.value?.naksatra)] ==
+      getNaksatraName(partnerNaksatra)
+    ) {
+      return true
+    }
+    return false
+  }
+
+  const inMoonRange = (points: number) => points <= 6
+  const isAgeDifferenceBig = (ageDifference: number) => {
+    // the man should be older maximum 10 years or younger maximum 4 years
+    if (
+      targetPerson.value?.sex == 'férfi' ||
+      targetPerson.value?.sex == 'ferfi' ||
+      targetPerson.value?.sex == 'male'
+    ) {
+      if (ageDifference >= -10 && ageDifference <= 4) {
+        return false
       }
-    },
-
-    created() {
-      axios
-        .get(`${import.meta.env.VITE_APP_API_URL}?names`, {
-          headers: { Authorization: `ApiKey ${this.token}` },
-        })
-        .then(response => (this.people = response.data))
-        .catch(error => console.error(error))
-    },
-
-    computed: {
-      targetPerson() {
-        return this.people.find(person => person.id == this.personId)
-      },
-      targetPersonInfo: {
-        get() {
-          return this.targetPerson ? this.targetPerson.info : ''
-        },
-        set(value) {
-          this.targetPerson.info = value
-        },
-      },
-    },
-
-    methods: {
-      analize(id) {
-        this.personId = id
-        this.getAnalysis()
-      },
-      getAnalysis() {
-        axios
-          .get(
-            `${import.meta.env.VITE_APP_API_URL}?analysis=${this.personId}`,
-            {
-              headers: { Authorization: `ApiKey ${this.token}` },
-            }
-          )
-          .then(
-            response =>
-              (this.possiblePartners = response.data.sort(
-                (a, b) => b.points - a.points
-              ))
-          )
-          .catch(error => console.error(error))
-      },
-      getNaksatraName(naksatra) {
-        return naksatra.substr(0, naksatra.indexOf(','))
-      },
-      inMoonRange(points) {
-        return points <= 6
-      },
-      isAgeDifferenceBig(ageDifference) {
-        // the man should be older maximum 10 years or younger maximum 4 years
-        console.log(ageDifference)
-        if (
-          this.targetPerson.sex == 'férfi' ||
-          this.targetPerson.sex == 'ferfi' ||
-          this.targetPerson.sex == 'male'
-        ) {
-          if (ageDifference >= -10 && ageDifference <= 4) {
-            return false
-          }
-        }
-        if (
-          this.targetPerson.sex == 'nő' ||
-          this.targetPerson.sex == 'female'
-        ) {
-          if (ageDifference >= -4 && ageDifference <= 10) {
-            return false
-          }
-        }
-        return true
-      },
-      moonData(person) {
-        this.loading = true
-        axios
-          .get(`${import.meta.env.VITE_APP_API_URL}?moonData=${person.id}`, {
-            headers: { Authorization: `ApiKey ${this.token}` },
-          })
-          .then(response => {
-            this.loading = false
-            if (
-              person.naksatra != response.data.naksatra ||
-              person.moon != response.data.moon
-            ) {
-              person.naksatra = response.data.naksatra
-              person.moon = response.data.moon
-              axios
-                .patch(
-                  import.meta.env.VITE_APP_API_URL,
-                  {
-                    id: person.id,
-                    naksatra: person.naksatra,
-                    moon: person.moon,
-                  },
-                  { headers: { Authorization: `ApiKey ${this.token}` } }
-                )
-                .then(response => console.log(response.data))
-            }
-          })
-          .catch(error => console.error(error))
-      },
-      rajju(partnerNaksatra) {
-        if (
-          this.rajjus[this.getNaksatraName(partnerNaksatra)] ==
-          this.rajjus[this.getNaksatraName(this.targetPerson.naksatra)]
-        ) {
-          return this.rajjus[this.getNaksatraName(partnerNaksatra)]
-        }
+    }
+    if (
+      targetPerson.value?.sex == 'nő' ||
+      targetPerson.value?.sex == 'no' ||
+      targetPerson.value?.sex == 'female'
+    ) {
+      if (ageDifference >= -4 && ageDifference <= 10) {
         return false
-      },
-      rashi(partnerRashi) {
-        if (!partnerRashi) {
-          return '='
-        }
-        let rashiNum = Math.abs(partnerRashi) + 1
-        return `${rashiNum}/${14 - rashiNum}`
-      },
-      saveInfo() {
-        axios
-          .patch(
-            import.meta.env.VITE_APP_API_URL,
-            {
-              id: this.targetPerson.id,
-              info: this.targetPerson.info,
-            },
-            { headers: { Authorization: `ApiKey ${this.token}` } }
-          )
-          .then(response => console.log(response.data))
-          .catch(error => console.error(error))
-      },
-      veda(partnerNaksatra) {
-        if (
-          this.vedas[this.getNaksatraName(partnerNaksatra)] ==
-          this.getNaksatraName(this.targetPerson.naksatra)
-        ) {
-          return true
-        }
-        if (
-          this.vedas[this.getNaksatraName(this.targetPerson.naksatra)] ==
-          this.getNaksatraName(partnerNaksatra)
-        ) {
-          return true
-        }
-        return false
-      },
-    },
+      }
+    }
+    return true
+  }
+
+  const rajju = (partnerNaksatra: string) => {
+    if (
+      rajjus[getNaksatraName(partnerNaksatra)] ==
+      rajjus[getNaksatraName(targetPerson.value?.naksatra || '')]
+    ) {
+      return rajjus[getNaksatraName(partnerNaksatra)]
+    }
+    return false
+  }
+  const rashi = (partnerRashi: number) => {
+    if (!partnerRashi) {
+      return '='
+    }
+    let rashiNum = Math.abs(partnerRashi) + 1
+    return `${rashiNum}/${14 - rashiNum}`
+  }
+  const saveInfo = () => {
+    axios
+      .patch(
+        import.meta.env.VITE_APP_API_URL,
+        {
+          id: targetPerson.value?.id,
+          info: targetPerson.value?.info,
+        },
+        { headers: { Authorization: `ApiKey ${props.token}` } }
+      )
+      .then(response => console.log(response.data))
+      .catch(error => console.error(error))
   }
 </script>
 
@@ -267,8 +264,7 @@
       <h2>
         {{
           targetPerson
-            ? `${targetPerson.birth_date}, ${targetPerson.birth_time},
-        ${targetPerson.birth_place}`
+            ? `${targetPerson.birth_date}, ${targetPerson.birth_time}, ${targetPerson.birth_place}`
             : ''
         }}
       </h2>
@@ -299,7 +295,7 @@
       <div class="info">
         <font-awesome-icon icon="info" />
 
-        <textarea v-model="targetPersonInfo"></textarea>
+        <textarea v-model="targetPerson?.info"></textarea>
 
         <font-awesome-icon icon="save" @click="saveInfo" />
       </div>
@@ -329,7 +325,7 @@
 
         <ul>
           <li>
-            <span>{{ parseInt((partner.points / maxPoints) * 100) }}%</span>
+            <span>{{ Math.floor(partner.points / maxPoints) * 100 }}%</span>
             ({{ partner.points }} points)
           </li>
 
