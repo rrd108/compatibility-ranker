@@ -1,3 +1,34 @@
+<script setup lang="ts">
+  import { ref } from 'vue'
+  import axios from 'axios'
+
+  const error = ref()
+  const user = ref()
+  const password = ref()
+
+  // 3.3+: alternative, more succinct syntax
+  const emit = defineEmits<{
+    tokenReceived: [token: string]
+  }>()
+
+  const login = () => {
+    error.value = null
+    axios
+      .post(`${import.meta.env.VITE_APP_API_URL}?get-token`, {
+        user: user.value,
+        password: password.value,
+      })
+      .then(response => {
+        if (response.data.error) {
+          error.value = response.data.error
+          return
+        }
+        emit('tokenReceived', response.data)
+      })
+      .catch(error => (error.value = error))
+  }
+</script>
+
 <template>
   <div>
     <form @submit.prevent="login">
@@ -19,39 +50,6 @@
     </form>
   </div>
 </template>
-
-<script>
-  import axios from 'axios'
-
-  export default {
-    name: 'Login',
-    data() {
-      return {
-        error: null,
-        user: null,
-        password: null,
-      }
-    },
-    methods: {
-      login() {
-        this.error = null
-        axios
-          .post(`${import.meta.env.VITE_APP_API_URL}?get-token`, {
-            user: this.user,
-            password: this.password,
-          })
-          .then(response => {
-            if (response.data.error) {
-              this.error = response.data.error
-              return
-            }
-            this.$emit('token', response.data)
-          })
-          .catch(error => (this.error = error))
-      },
-    },
-  }
-</script>
 
 <style scoped>
   div {
