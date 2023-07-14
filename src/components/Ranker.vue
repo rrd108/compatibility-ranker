@@ -62,6 +62,7 @@
         vedas: {
           // TODO these names should be the same as in the database coming from the api call
           // and in the compatibility chart
+          // TODO use naksatraNames.json?
           Ashwini: 'Jyeshta',
           Punarvasu: 'Uttara Ashadha',
           'Uttara Phalguni': 'Purva Bhadrapada',
