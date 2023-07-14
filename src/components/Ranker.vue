@@ -335,7 +335,11 @@
           <li>
             <ul id="additional">
               <li :class="{ inRange: !veda(partner.naksatra) }">
-                <h5>Veda</h5>
+                <h5
+                  title="A Veda a házastárs személyiségét és temperamentumát tükrözi"
+                >
+                  Veda
+                </h5>
 
                 <span>
                   <font-awesome-icon
@@ -352,7 +356,11 @@
               </li>
 
               <li :class="{ inRange: inMoonRange(partner.stridirgha) }">
-                <h5>Stridirgha</h5>
+                <h5
+                  title="A Stridirgha a házastárs élethosszát és egészségét tükrözi"
+                >
+                  Stridirgha
+                </h5>
 
                 <span>{{ zodiacs[partner.moon] }}</span>
                 {{ partner.moon }}
@@ -366,7 +374,11 @@
                   { nice: partner.rashi < 0 }, // TODO is it like this?
                 ]"
               >
-                <h5>? Rashi</h5>
+                <h5
+                  title="A Rasi a házastárs karrierjét és anyagi helyzetét tükrözi"
+                >
+                  ? Rashi
+                </h5>
 
                 <span>
                   <font-awesome-icon
@@ -381,7 +393,11 @@
               </li>
 
               <li :class="{ inRange: !rajju(partner.naksatra) }">
-                <h5>Rajju</h5>
+                <h5
+                  title="A Rajju a házastárs szerelmi életét és kapcsolatait tükrözi"
+                >
+                  Rajju
+                </h5>
 
                 <span>
                   <font-awesome-icon
