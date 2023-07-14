@@ -1,13 +1,13 @@
 <script setup lang="ts">
   import { PropType } from 'vue'
   import getIcon from '@/composables/useIcon.ts'
-  import PersonMoonData from '@/interfaces/PersonMoonData'
   import { useStore } from '@/store'
   import RankerPartnerAnalysis from '@/components/RankerPartnerAnalysis.vue'
   import Stars from './Stars.vue'
+  import PersonAnalysis from '@/interfaces/PersonAnalysis'
 
   const props = defineProps({
-    partner: Object as PropType<PersonMoonData>,
+    partner: Object as PropType<PersonAnalysis>,
   })
 
   const store = useStore()
@@ -88,7 +88,7 @@
   }
   li {
     background-color: #0c7c59;
-    padding: 0.5em;
+    padding: 1em;
     margin: 0.25em 0;
     color: #fff;
     width: 100%;

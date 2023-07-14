@@ -99,14 +99,14 @@ if ($isAuthenticated) {
             && isSameNaksatras($chartData->girl, $person['naksatra'] . ', ' . $person['pada'], $naksatraNames)
             && isSameNaksatras($chartData->boy, $possiblePartner['naksatra'] . ', ' . $possiblePartner['pada'], $naksatraNames)
           ) {
-            $possiblePartners[$i]['points'] = $chartData->point;
+            $possiblePartners[$i]['points'] = (float)$chartData->point;
           }
           if (
             $selectedPersonSex == 'boy'
             && isSameNaksatras($chartData->girl, $possiblePartner['naksatra'] . ', ' . $possiblePartner['pada'], $naksatraNames)
             && isSameNaksatras($chartData->boy, $person['naksatra'] . ', ' . $person['pada'], $naksatraNames)
           ) {
-            $possiblePartners[$i]['points'] = $chartData->point;
+            $possiblePartners[$i]['points'] = (float)$chartData->point;
           }
         }
 

@@ -30,8 +30,6 @@
       {{ store.targetPerson.birth_place }}
     </h2>
 
-    <font-awesome-icon icon="sync" spin v-show="store.loading" />
-
     <h3
       class="pointer"
       v-show="!store.loading"
