@@ -8,12 +8,12 @@
   import Vedas from '@/interfaces/Vedas'
   import Zodiacs from '@/interfaces/Zodiacs'
   import RankerPersonSelect from '@/components/RankerPersonSelect.vue'
+  import RankerHeader from '@/components/RankerHeader.vue'
   import getIcon from '@/composables/useIcon.ts'
   import isMale from '@/composables/useIsMale.ts'
+  import { useStore } from '@/store'
 
-  const props = defineProps<{
-    token: string
-  }>()
+  const store = useStore()
 
   const maxPoints = 35
   const naksatras = [
@@ -129,7 +129,7 @@
   const people = ref<PersonMoonData[]>([])
   axios
     .get(`${import.meta.env.VITE_APP_API_URL}?names`, {
-      headers: { Authorization: `ApiKey ${props.token}` },
+      headers: { Authorization: `ApiKey ${store.token}` },
     })
     .then(response => (people.value = response.data))
     .catch(error => console.error(error))
@@ -143,7 +143,7 @@
   const getAnalysis = () => {
     axios
       .get(`${import.meta.env.VITE_APP_API_URL}?analysis=${personId.value}`, {
-        headers: { Authorization: `ApiKey ${props.token}` },
+        headers: { Authorization: `ApiKey ${store.token}` },
       })
       .then(
         response =>
@@ -160,39 +160,6 @@
       people.value.find(person => person.id == personId.value) as PersonMoonData
   )
 
-  const moonData = (person: PersonMoonData | undefined) => {
-    if (!person) return
-
-    loading.value = true
-    axios
-      .get(`${import.meta.env.VITE_APP_API_URL}?moonData=${person.id}`, {
-        headers: { Authorization: `ApiKey ${props.token}` },
-      })
-      .then(response => {
-        loading.value = false
-        if (
-          person.naksatra != response.data.naksatra ||
-          person.moon != response.data.moon
-        ) {
-          person.naksatra = response.data.naksatra
-          person.moon = response.data.moon
-          axios
-            .patch(
-              import.meta.env.VITE_APP_API_URL,
-              {
-                id: person.id,
-                naksatra: person.naksatra,
-                moon: person.moon,
-              },
-              { headers: { Authorization: `ApiKey ${props.token}` } }
-            )
-            .then(response => console.log(response.data))
-            .catch(error => console.error(error))
-        }
-      })
-      .catch(error => console.error(error))
-  }
-
   const saveInfo = () => {
     axios
       .patch(
@@ -201,7 +168,7 @@
           id: targetPerson.value?.id,
           info: targetPerson.value?.info,
         },
-        { headers: { Authorization: `ApiKey ${props.token}` } }
+        { headers: { Authorization: `ApiKey ${store.token}` } }
       )
       .then(response => console.log(response.data))
       .catch(error => console.error(error))
@@ -267,6 +234,11 @@
 <template>
   <div>
     <RankerPersonSelect :people="people" @personChanged="personChanged" />
+    <RankerHeader
+      v-if="targetPerson"
+      :targetPerson="targetPerson"
+      :loading="loading"
+    />
 
     <article v-if="targetPerson">
       <h1>{{ getIcon(targetPerson.sex) }} {{ targetPerson.name }}</h1>
@@ -475,6 +447,7 @@
   article h3 {
     font-size: 1rem;
   }
+
   .info {
     margin-top: 0.5em;
     padding: 0.5em;

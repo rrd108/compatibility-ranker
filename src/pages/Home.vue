@@ -1,18 +1,14 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
   import Login from '@/components/Login.vue'
   import Ranker from '@/components/Ranker.vue'
+  import { useStore } from '@/store'
 
-  const token = ref(sessionStorage.getItem('cR'))
-  const tokenReceived = (tokenString: string) => {
-    token.value = tokenString
-    sessionStorage.setItem('cR', tokenString)
-  }
+  const store = useStore()
 </script>
 
 <template>
   <div>
-    <Login v-if="!token" @tokenReceived="tokenReceived" />
-    <Ranker v-if="token" :token="token" />
+    <Login v-if="!store.token" />
+    <Ranker v-if="store.token" />
   </div>
 </template>

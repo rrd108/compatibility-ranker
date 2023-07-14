@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -55,7 +56,10 @@ library.add(
   faWalking
 )
 
+const pinia = createPinia()
+
 createApp(App)
+  .use(pinia)
   .component('font-awesome-icon', FontAwesomeIcon)
   .use(router)
   .mount('#app')
