@@ -7,6 +7,7 @@
   import Rajjus from '@/interfaces/Rajjus'
   import Vedas from '@/interfaces/Vedas'
   import Zodiacs from '@/interfaces/Zodiacs'
+  import { Sex } from '@/interfaces/Person'
 
   const props = defineProps<{
     token: string
@@ -45,13 +46,13 @@
   const rajjus: Rajjus = {
     // TODO ezek a naksatra nevek szerepelnek a chart.json-ban 210517-én
     /* ha mindkettő
-        láb - állandó vándorlás - walking
-        csípő - szegénység - money-bill-alt
-        köldök - gyerek elvesztése - baby
-        nyak - feleség halála - female
-        fej - férj halála - male
-      Exception: If Rasi, Graha Maitra, Tara and Mahendra are present then Rajju need not be considered.
-    */
+          láb - állandó vándorlás - walking
+          csípő - szegénység - money-bill-alt
+          köldök - gyerek elvesztése - baby
+          nyak - feleség halála - female
+          fej - férj halála - male
+        Exception: If Rasi, Graha Maitra, Tara and Mahendra are present then Rajju need not be considered.
+      */
     // TODO Purva Phalguni is missing
     Anuradha: 'csipő',
     Ardra: 'nyak',
@@ -133,6 +134,8 @@
       .catch(error => console.error(error))
   )
 
+  const getIcon = () => (isMale(targetPerson.value.sex) ? '🧔' : '👱‍♀️')
+
   const possiblePartners = ref<PersonAnalysis[]>([])
   const getAnalysis = () => {
     axios
@@ -149,8 +152,9 @@
       .catch(error => console.error(error))
   }
 
-  const targetPerson = computed(() =>
-    people.value.find(person => person.id == personId.value)
+  const targetPerson = computed(
+    () =>
+      people.value.find(person => person.id == personId.value) as PersonMoonData
   )
 
   const moonData = (person: PersonMoonData | undefined) => {
@@ -214,13 +218,42 @@
   const getNaksatraName = (naksatra: string) =>
     naksatra.substring(0, naksatra.indexOf(',')) as Naksatra
 
-  const getNaksatraNameForVeda = (naksatra: string | undefined) =>
+  const getNaksatraNameForVeda = (naksatra: string) =>
     naksatra?.substring(0, naksatra.indexOf(',')) as keyof Vedas
 
   // TODO The Nakshatra of the man should be at least 14 away from the woman's
   // at server side we calculate the zodiac difference at we want smaller then 6? where this number came?
   // is it good like that? check in Kala
   const inMoonRange = (difference: number) => difference <= 6
+
+  const isMale = (sex: Sex) => ['férfi', 'ferfi', 'male'].includes(sex)
+
+  const naksatraDistanceForStridirgha = 14
+  const naksatraDistance = (partnerNaksatra: Naksatra) => {
+    const manNaksatraPosition = naksatras.findIndex(naksatra =>
+      isMale(targetPerson.value.sex)
+        ? naksatra == targetPerson.value.naksatra
+        : naksatra == partnerNaksatra
+    )
+    const womanNaksatraPosition = naksatras.findIndex(naksatra =>
+      isMale(targetPerson.value.sex)
+        ? naksatra == partnerNaksatra
+        : naksatra == targetPerson.value.naksatra
+    )
+    if (manNaksatraPosition == -1 || womanNaksatraPosition == -1) return -1
+
+    return womanNaksatraPosition >= manNaksatraPosition
+      ? womanNaksatraPosition - manNaksatraPosition
+      : naksatras.length - manNaksatraPosition + womanNaksatraPosition
+  }
+
+  const rashi = (partnerRashi: number) => {
+    if (!partnerRashi) {
+      return '='
+    }
+    let rashiNum = Math.abs(partnerRashi) + 1
+    return `${rashiNum}/${14 - rashiNum}`
+  }
 </script>
 
 <template>
@@ -236,11 +269,11 @@
     <select @change="getAnalysis" v-model="personId">
       <option v-for="person in people" :key="person.id" :value="person.id">
         {{ person.name }} ({{ person.birth_date.substring(0, 4) }})
-        {{ person.naksatra }} {{ person.moon }}
+        {{ person.naksatra }}, {{ person.pada }} - {{ person.moon }}
       </option>
     </select>
 
-    <article v-show="targetPerson">
+    <article v-if="targetPerson">
       <h1>{{ targetPerson ? targetPerson.name : '' }}</h1>
 
       <h2>
@@ -271,7 +304,7 @@
         title="Get Moon Data"
       >
         <font-awesome-icon icon="meteor" />
-        {{ targetPerson ? targetPerson.naksatra : '' }}
+        {{ targetPerson.naksatra }}, {{ targetPerson.pada }}
       </h3>
 
       <div class="info">
@@ -302,10 +335,8 @@
 
         <h4>
           <font-awesome-icon icon="meteor" />
-          {{ partner.naksatra }}
-          <small
-            class="outRange"
-            v-if="!naksatras.includes(getNaksatraName(partner.naksatra))"
+          {{ partner.naksatra }}, {{ partner.pada }}
+          <small class="outRange" v-if="!naksatras.includes(partner.naksatra)"
             >Unknown Naksatra</small
           >
         </h4>
@@ -332,9 +363,9 @@
                     "
                   />
                 </span>
-                {{ getNaksatraName(targetPerson?.naksatra || '') }}
+                {{ targetPerson.naksatra }}
                 <br />
-                {{ getNaksatraName(partner.naksatra) }}
+                {{ partner.naksatra }}
               </li>
 
               <li :class="{ inRange: inMoonRange(partner.stridirgha) }">
@@ -347,7 +378,69 @@
                 <span title="Partner holdja">{{ zodiacs[partner.moon] }}</span>
                 {{ partner.moon }}
                 <br />
-                {{ partner.stridirgha }}
+                <span
+                  title="Hold helyzetek különbsége a zodiákus jegyek alapján"
+                >
+                  {{ partner.stridirgha }}</span
+                >
+              </li>
+
+              <li
+                :class="{
+                  inRange:
+                    naksatraDistance(partner.naksatra) >=
+                    naksatraDistanceForStridirgha,
+                }"
+              >
+                <h5
+                  title="A Stridirgha azt mutatja, hogy a férfi energia mennyire tud áramolni a nő felé."
+                >
+                  Stridirgha
+                </h5>
+
+                <small v-if="isMale(targetPerson.sex)">
+                  {{ targetPerson.naksatra }}
+                  <br />
+                  {{ partner.naksatra }}
+                </small>
+                <small v-if="!isMale(targetPerson.sex)">
+                  {{ partner.naksatra }}
+                  <br />
+                  {{ targetPerson.naksatra }}
+                </small>
+
+                <span
+                  :title="`Az értéknek legalább ${naksatraDistanceForStridirgha}-nek kell lennie, minél nagyobb annál jobb`"
+                >
+                  {{ naksatraDistance(partner.naksatra) }}
+                </span>
+              </li>
+
+              <li
+                :class="[
+                  { inRange: !partner.rashi || partner.rashi == 6 },
+                  { nice: partner.rashi < 0 }, // TODO is it like this?
+                ]"
+              >
+                <h5
+                  title="A Rasi a házastárs karrierjét és anyagi helyzetét tükrözi"
+                >
+                  ? Rashi
+                </h5>
+
+                {{ targetPerson.moon }}
+                <br />
+                {{ partner.moon }}
+                <span>
+                  <font-awesome-icon
+                    :icon="
+                      !partner.rashi || partner.rashi == 6
+                        ? 'check-circle'
+                        : 'exclamation-circle'
+                    "
+                  />
+                </span>
+                {{ rashi(partner.rashi) }}
               </li>
             </ul>
           </li>
