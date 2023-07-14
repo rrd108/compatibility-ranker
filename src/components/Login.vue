@@ -6,7 +6,6 @@
   const user = ref()
   const password = ref()
 
-  // 3.3+: alternative, more succinct syntax
   const emit = defineEmits<{
     tokenReceived: [token: string]
   }>()
