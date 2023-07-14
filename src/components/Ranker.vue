@@ -134,7 +134,7 @@
       .catch(error => console.error(error))
   )
 
-  const getIcon = (sex: Sex) => (isMale(sex) ? '🧔' : '👱‍♀️')
+  const getIcon = (sex: Sex) => (isMale(sex) ? '🧔' : '👰')
 
   const possiblePartners = ref<PersonAnalysis[]>([])
   const getAnalysis = () => {
@@ -275,7 +275,7 @@
     </select>
 
     <article v-if="targetPerson">
-      <h1>{{ targetPerson ? targetPerson.name : '' }}</h1>
+      <h1>{{ getIcon(targetPerson.sex) }} {{ targetPerson.name }}</h1>
 
       <h2>
         {{
@@ -320,7 +320,7 @@
     <div>
       <section v-for="partner in possiblePartners" :key="partner.id">
         <h2>
-          {{ partner.name }}
+          {{ getIcon(partner.sex) }} {{ partner.name }}
           <font-awesome-icon icon="link" @click="analize(partner.id)" />
         </h2>
 
