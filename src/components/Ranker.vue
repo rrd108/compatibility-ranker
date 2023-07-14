@@ -134,7 +134,7 @@
       .catch(error => console.error(error))
   )
 
-  const getIcon = () => (isMale(targetPerson.value.sex) ? '🧔' : '👱‍♀️')
+  const getIcon = (sex: Sex) => (isMale(sex) ? '🧔' : '👱‍♀️')
 
   const possiblePartners = ref<PersonAnalysis[]>([])
   const getAnalysis = () => {
@@ -268,6 +268,7 @@
 
     <select @change="getAnalysis" v-model="personId">
       <option v-for="person in people" :key="person.id" :value="person.id">
+        {{ getIcon(person.sex) }}
         {{ person.name }} ({{ person.birth_date.substring(0, 4) }})
         {{ person.naksatra }}, {{ person.pada }} - {{ person.moon }}
       </option>
