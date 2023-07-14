@@ -314,11 +314,10 @@
             <ul id="additional">
               <li :class="{ inRange: !veda(partner.naksatra) }">
                 <h5
-                  title="A Veda a házastárs személyiségét és temperamentumát tükrözi"
+                  title="A Veda a házastárs személyiségét és temperamentumát tükrözi. (Nincs kivétel)"
                 >
                   Veda
                 </h5>
-                {{ partner.naksatra }} / {{ targetPerson.naksatra }}
                 <span>
                   <font-awesome-icon
                     :icon="
@@ -328,6 +327,9 @@
                     "
                   />
                 </span>
+                {{ getNaksatraName(targetPerson?.naksatra || '') }}
+                <br />
+                {{ getNaksatraName(partner.naksatra) }}
               </li>
             </ul>
           </li>
