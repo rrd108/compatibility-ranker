@@ -3,6 +3,7 @@ import { Person } from './Person'
 
 export default interface PersonMoonData extends Person {
   naksatra: Naksatra
+  pada: string
   moon:
     | 'Aries'
     | 'Taurus'

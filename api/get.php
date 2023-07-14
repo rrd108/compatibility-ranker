@@ -50,7 +50,7 @@ if ($isAuthenticated) {
   }
 
   if (isset($_GET['names'])) {
-    $stmt = $pdo->prepare("SELECT id, name, sex, birth_date, birth_time, birth_place, naksatra, moon, info
+    $stmt = $pdo->prepare("SELECT id, name, sex, birth_date, birth_time, birth_place, naksatra, pada, moon, info
       FROM devs
       WHERE inactive = '' OR inactive IS NULL
       ORDER BY name");
