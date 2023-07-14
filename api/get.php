@@ -121,6 +121,8 @@ if ($isAuthenticated) {
         }
         // male - female
         $possiblePartners[$i]['rashi'] = -$moonPositionDifference;
+
+        // there are 12 zodiacs, we calculate how far are they from each other
         $possiblePartners[$i]['stridirgha'] = $moonPositionDifference > 0 ? $moonPositionDifference : 12 + $moonPositionDifference;
       }
     }

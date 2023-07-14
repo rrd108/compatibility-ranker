@@ -216,6 +216,11 @@
 
   const getNaksatraNameForVeda = (naksatra: string | undefined) =>
     naksatra?.substring(0, naksatra.indexOf(',')) as keyof Vedas
+
+  // TODO The Nakshatra of the man should be at least 14 away from the woman's
+  // at server side we calculate the zodiac difference at we want smaller then 6? where this number came?
+  // is it good like that? check in Kala
+  const inMoonRange = (difference: number) => difference <= 6
 </script>
 
 <template>
@@ -330,6 +335,19 @@
                 {{ getNaksatraName(targetPerson?.naksatra || '') }}
                 <br />
                 {{ getNaksatraName(partner.naksatra) }}
+              </li>
+
+              <li :class="{ inRange: inMoonRange(partner.stridirgha) }">
+                <h5
+                  title="A Stridirgha azt mutatja, hogy a férfi energia mennyire tud áramolni a nő felé."
+                >
+                  Stridirgha
+                </h5>
+
+                <span title="Partner holdja">{{ zodiacs[partner.moon] }}</span>
+                {{ partner.moon }}
+                <br />
+                {{ partner.stridirgha }}
               </li>
             </ul>
           </li>
