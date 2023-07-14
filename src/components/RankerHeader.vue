@@ -1,14 +1,8 @@
 <script setup lang="ts">
-  import PersonMoonData from '@/interfaces/PersonMoonData'
   import getIcon from '@/composables/useIcon.ts'
   import moonData from '@/composables/useMoonData'
   import { useStore } from '@/store'
   import axios from 'axios'
-
-  const props = defineProps<{
-    loading: boolean
-    targetPerson: PersonMoonData
-  }>()
 
   const store = useStore()
 
@@ -17,8 +11,8 @@
       .patch(
         import.meta.env.VITE_APP_API_URL,
         {
-          id: props.targetPerson.id,
-          info: props.targetPerson.info,
+          id: store.targetPerson.id,
+          info: store.targetPerson.info,
         },
         { headers: { Authorization: `ApiKey ${store.token}` } }
       )
@@ -29,43 +23,40 @@
 
 <template>
   <header>
-    <h1>{{ getIcon(targetPerson.sex) }} {{ targetPerson.name }}</h1>
+    <h1>{{ getIcon(store.targetPerson.sex) }} {{ store.targetPerson.name }}</h1>
 
     <h2>
-      {{
-        targetPerson
-          ? `${targetPerson.birth_date}, ${targetPerson.birth_time}, ${targetPerson.birth_place}`
-          : ''
-      }}
+      {{ store.targetPerson.birth_date }}, {{ store.targetPerson.birth_time }},
+      {{ store.targetPerson.birth_place }}
     </h2>
 
-    <font-awesome-icon icon="sync" spin v-show="loading" />
+    <font-awesome-icon icon="sync" spin v-show="store.loading" />
 
     <h3
       class="pointer"
-      v-show="!loading"
-      @click="moonData(targetPerson)"
+      v-show="!store.loading"
+      @click="moonData(store.targetPerson)"
       title="Get Moon Data"
     >
       <font-awesome-icon icon="moon" />
-      {{ targetPerson ? store.zodiacs[targetPerson.moon] : '' }}
-      {{ targetPerson ? targetPerson.moon : '' }}
+      {{ store.targetPerson ? store.zodiacs[store.targetPerson.moon] : '' }}
+      {{ store.targetPerson ? store.targetPerson.moon : '' }}
     </h3>
 
     <h3
       class="pointer"
-      v-show="!loading"
-      @click="moonData(targetPerson)"
+      v-show="!store.loading"
+      @click="moonData(store.targetPerson)"
       title="Get Moon Data"
     >
       <font-awesome-icon icon="meteor" />
-      {{ targetPerson.naksatra }}, {{ targetPerson.pada }}
+      {{ store.targetPerson.naksatra }}, {{ store.targetPerson.pada }}
     </h3>
 
     <div class="info">
       <font-awesome-icon icon="info" />
 
-      <textarea>TODO {{ targetPerson?.info }}</textarea>
+      <textarea v-model="store.targetPerson.info"></textarea>
 
       <font-awesome-icon icon="save" @click="saveInfo" />
     </div>

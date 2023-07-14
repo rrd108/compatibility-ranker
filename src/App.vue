@@ -25,6 +25,9 @@
   main {
     padding: 1rem;
   }
+  ul {
+    list-style: none;
+  }
   input {
     padding: 0.3rem;
     margin-left: 1rem;
