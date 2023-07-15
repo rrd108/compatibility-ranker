@@ -85,7 +85,7 @@ export const useStore = defineStore('cR', {
       Swati: 'nyak',
       'Uttara Ashadha': 'köldök',
       'Uttara Bhadrapada': 'csípő',
-      Uttaraphalguni: 'köldök',
+      'Uttara Phalguni': 'köldök',
       Vishaka: 'köldök',
     },
     rajjuIcons: {

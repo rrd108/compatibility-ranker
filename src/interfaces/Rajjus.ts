@@ -23,6 +23,6 @@ export default interface Rajjus {
   Swati: 'nyak'
   'Uttara Ashadha': 'köldök'
   'Uttara Bhadrapada': 'csípő'
-  Uttaraphalguni: 'köldök'
+  'Uttara Phalguni': 'köldök'
   Vishaka: 'köldök'
 }
