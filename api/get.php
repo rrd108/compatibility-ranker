@@ -123,7 +123,7 @@ if ($isAuthenticated) {
         $possiblePartners[$i]['rashi'] = -$moonPositionDifference;
 
         // TODO now we calculate on client side, get it back to server side #9
-        $possiblePartners[$i]['stridirgha'] = 'TODO #9'
+        $possiblePartners[$i]['stridirgha'] = 'TODO #9';
       }
     }
 
