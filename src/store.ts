@@ -10,7 +10,7 @@ interface State {
   maxPoints: number
   naksatras: Naksatra[]
   rajjus: Rajjus
-  rajjuIcons: string[]
+  rajjuIcons: {}
   targetPerson: PersonMoonData
   token: string
   vedas: Vedas
@@ -76,11 +76,11 @@ export const useStore = defineStore('cR', {
       Moola: 'láb',
       Punarvasu: 'köldök',
       'Purva Bhadrapada': 'köldök',
-      Purvashadha: 'csípő',
+      'Purva Ashadha': 'csípő',
       Pushya: 'csípő',
       Revati: 'láb',
       Rohini: 'nyak',
-      Satabhisha: 'nyak',
+      Shatabhisha: 'nyak',
       Shravana: 'nyak',
       Swati: 'nyak',
       'Uttara Ashadha': 'köldök',
