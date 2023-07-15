@@ -4,7 +4,7 @@ export default interface Vedas {
   'Uttara Phalguni': 'Purva Bhadrapada'
   Bharani: 'Anuradha'
   Pushya: 'Purva Ashadha'
-  Hasta: 'Shatabisha'
+  Hasta: 'Shatabhisha'
   Krithika: 'Vishaka'
   Ashlesha: 'Moola'
   Rohini: 'Swati'

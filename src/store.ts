@@ -99,13 +99,12 @@ export const useStore = defineStore('cR', {
     token: '',
     vedas: {
       // these naksatras must not be married together
-      // TODO these names should be the same as in the database coming from the api call and in the compatibility chart
       Ashwini: 'Jyeshta',
       Punarvasu: 'Uttara Ashadha',
       'Uttara Phalguni': 'Purva Bhadrapada',
       Bharani: 'Anuradha',
       Pushya: 'Purva Ashadha',
-      Hasta: 'Shatabisha',
+      Hasta: 'Shatabhisha',
       Krithika: 'Vishaka',
       Ashlesha: 'Moola',
       Rohini: 'Swati',
