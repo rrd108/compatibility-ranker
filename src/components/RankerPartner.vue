@@ -91,7 +91,8 @@
     font-size: 0.75rem;
   }
   h6 {
-    font-size: 8rem;
+    font-size: 10rem;
+    font-weight: normal;
     padding: 0.25em;
   }
 </style>

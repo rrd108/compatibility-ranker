@@ -44,4 +44,33 @@
   a {
     color: #fff;
   }
+  .outRange {
+    background-color: #d64933;
+  }
+  .nice {
+    background-color: #278735;
+  }
+  .inRange {
+    background-color: #22b73b;
+  }
+  .pointer {
+    cursor: pointer;
+  }
+
+  .analysis {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1em;
+  }
+  .analysis div {
+    padding: 1rem;
+  }
+  .analysis h5 {
+    font-size: 1.5rem;
+  }
+  .analysis span {
+    font-size: 2rem;
+    display: block;
+    margin: 0.5rem;
+  }
 </style>
