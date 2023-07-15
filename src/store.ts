@@ -10,7 +10,7 @@ interface State {
   maxPoints: number
   naksatras: Naksatra[]
   rajjus: Rajjus
-  rajjuIcons: {}
+  rajjuInfo: { area: string; effect: string; icon: string }[]
   targetPerson: PersonMoonData
   token: string
   vedas: Vedas
@@ -51,50 +51,46 @@ export const useStore = defineStore('cR', {
       'Revati',
     ],
     rajjus: {
-      // TODO ezek a naksatra nevek szerepelnek a chart.json-ban 210517-én
-      /* ha mindkettő
-            láb - állandó vándorlás - walking
-            csípő - szegénység - money-bill-alt
-            köldök - gyerek elvesztése - baby
-            nyak - feleség halála - female
-            fej - férj halála - male
-          Exception: If Rasi, Graha Maitra, Tara and Mahendra are present then Rajju need not be considered.
-        */
-      // TODO Purva Phalguni is missing
-      Anuradha: 'csipő',
-      Ardra: 'nyak',
-      Ashlesha: 'láb',
       Ashwini: 'láb',
-      Bharani: 'csípő',
-      Chitra: 'fej',
-      Dhanishta: 'fej',
-      Hasta: 'nyak',
-      Jyeshta: 'láb',
-      Krithika: 'köldök',
+      Ashlesha: 'láb',
       Magha: 'láb',
-      Mrigashirsha: 'fej',
+      Jyeshta: 'láb',
       Moola: 'láb',
-      Punarvasu: 'köldök',
-      'Purva Bhadrapada': 'köldök',
-      'Purva Ashadha': 'csípő',
-      Pushya: 'csípő',
       Revati: 'láb',
-      Rohini: 'nyak',
-      Shatabhisha: 'nyak',
-      Shravana: 'nyak',
-      Swati: 'nyak',
-      'Uttara Ashadha': 'köldök',
+
+      Bharani: 'csípő',
+      Pushya: 'csípő',
+      'Purva Phalguni': 'csípő',
+      Anuradha: 'csipő',
+      'Purva Ashadha': 'csípő',
       'Uttara Bhadrapada': 'csípő',
+
+      Rohini: 'nyak',
+      Ardra: 'nyak',
+      Hasta: 'nyak',
+      Swati: 'nyak',
+      Shravana: 'nyak',
+      Shatabhisha: 'nyak',
+
+      Krithika: 'köldök',
+      Punarvasu: 'köldök',
       'Uttara Phalguni': 'köldök',
       Vishaka: 'köldök',
+      'Uttara Ashadha': 'köldök',
+      'Purva Bhadrapada': 'köldök',
+
+      Mrigashirsha: 'fej',
+      Chitra: 'fej',
+      Dhanishta: 'fej',
     },
-    rajjuIcons: {
-      láb: 'walking',
-      csípő: 'money-bill-alt',
-      köldök: 'baby',
-      nyak: 'female',
-      fej: 'male',
-    },
+    rajjuInfo: [
+      //ha mindkettő
+      { area: 'láb', effect: 'állandó vándorlás', icon: 'walking' },
+      { area: 'csípő', effect: 'szegénység', icon: 'money-bill-alt' },
+      { area: 'köldök', effect: 'gyerek elvesztése', icon: 'baby' },
+      { area: 'nyak', effect: 'feleség halála', icon: 'female' },
+      { area: 'fej', effect: 'férj halála', icon: 'male' },
+    ],
     targetPerson: {} as PersonMoonData,
     token: '',
     vedas: {
