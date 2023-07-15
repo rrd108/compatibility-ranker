@@ -10,6 +10,10 @@
     partner: Object as PropType<PersonAnalysis>,
   })
 
+  const emit = defineEmits<{
+    personChanged: [personId: number]
+  }>()
+
   const store = useStore()
 
   const isAgeDifferenceBig = (ageDifference: number) => {
@@ -32,7 +36,10 @@
   <div v-if="partner">
     <h2>
       {{ getIcon(partner.sex) }} {{ partner.name }}
-      <font-awesome-icon icon="link" @click="TODOanalize(partner.id)" />
+      <font-awesome-icon
+        icon="link"
+        @click="emit('personChanged', partner.id)"
+      />
     </h2>
 
     <h3>

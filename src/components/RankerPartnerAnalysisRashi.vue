@@ -86,12 +86,8 @@
     },
   ]
 
-  const rashi = (partnerRashi: number) => {
-    if (isMale(store.targetPerson.sex)) {
-      return rasiInfo.find(r => r.difference.includes(partnerRashi))
-    }
-    // TODO is woman
-  }
+  const rashi = (partnerRashi: number) =>
+    rasiInfo.find(r => r.difference.includes(partnerRashi))
 
   const getMoonPosition = (moon: string) =>
     Object.keys(store.zodiacs).findIndex(zodiac => zodiac == moon) + 1

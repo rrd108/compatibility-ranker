@@ -59,7 +59,11 @@
       :key="partner.id"
       v-if="!store.loading"
     >
-      <RankerPartner v-if="partner.id" :partner="partner" />
+      <RankerPartner
+        v-if="partner.id"
+        :partner="partner"
+        @personChanged="personChanged"
+      />
     </section>
   </div>
 </template>
