@@ -3,11 +3,10 @@
   import getIcon from '@/composables/useIcon.ts'
   import { useStore } from '@/store'
   import RankerPartnerAnalysis from '@/components/RankerPartnerAnalysis.vue'
-  import Stars from './Stars.vue'
   import PersonAnalysis from '@/interfaces/PersonAnalysis'
   import isMale from '@/composables/useIsMale'
 
-  const props = defineProps({
+  defineProps({
     partner: Object as PropType<PersonAnalysis>,
   })
 
@@ -67,8 +66,6 @@
         év korkülönbség
       </li>
     </ul>
-
-    <Stars :points="partner.points" />
   </div>
 </template>
 
