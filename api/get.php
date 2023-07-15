@@ -50,7 +50,7 @@ if ($isAuthenticated) {
   }
 
   if (isset($_GET['names'])) {
-    $stmt = $pdo->prepare("SELECT id, name, sex, birth_date, birth_time, birth_place, naksatra, moon, info
+    $stmt = $pdo->prepare("SELECT id, name, sex, birth_date, birth_time, birth_place, naksatra, pada, moon, info
       FROM devs
       WHERE inactive = '' OR inactive IS NULL
       ORDER BY name");
@@ -69,7 +69,7 @@ if ($isAuthenticated) {
     $naksatraNames = file_get_contents('../data/naksatraNames.json');
     $naksatraNames = json_decode($naksatraNames);
 
-    $stmt = $pdo->prepare("SELECT id, name, sex, YEAR(birth_date) AS birth_year, naksatra, moon
+    $stmt = $pdo->prepare("SELECT id, name, sex, YEAR(birth_date) AS birth_year, naksatra, pada, moon
       FROM devs
       WHERE id = ?");
     $stmt->execute([$_GET['analysis']]);
@@ -79,7 +79,7 @@ if ($isAuthenticated) {
     $selectedPersonSex = in_array($person['sex'], ['no', 'nő', 'female']) ? 'girl' : 'boy';
 
     $oppositeSex = ($selectedPersonSex == 'girl') ? '("férfi", "male")' : '("no", "nő", "female")';
-    $stmt = $pdo->prepare("SELECT id, name, birth_date, birth_time, birth_place, (" . $person['birth_year'] . " - YEAR(birth_date)) AS age_difference, naksatra, moon
+    $stmt = $pdo->prepare("SELECT id, name, sex, birth_date, birth_time, birth_place, (" . $person['birth_year'] . " - YEAR(birth_date)) AS age_difference, naksatra, pada, moon
       FROM devs
       WHERE sex IN $oppositeSex
       AND (inactive = 0 OR inactive IS NULL)");
@@ -96,22 +96,23 @@ if ($isAuthenticated) {
           // points
           if (
             $selectedPersonSex == 'girl'
-            && isSameNaksatras($chartData->girl, $person['naksatra'], $naksatraNames)
-            && isSameNaksatras($chartData->boy, $possiblePartner['naksatra'], $naksatraNames)
+            && isSameNaksatras($chartData->girl, $person['naksatra'] . ', ' . $person['pada'], $naksatraNames)
+            && isSameNaksatras($chartData->boy, $possiblePartner['naksatra'] . ', ' . $possiblePartner['pada'], $naksatraNames)
           ) {
-            $possiblePartners[$i]['points'] = $chartData->point;
+            $possiblePartners[$i]['points'] = (float)$chartData->point;
           }
           if (
             $selectedPersonSex == 'boy'
-            && isSameNaksatras($chartData->girl, $possiblePartner['naksatra'], $naksatraNames)
-            && isSameNaksatras($chartData->boy, $person['naksatra'], $naksatraNames)
+            && isSameNaksatras($chartData->girl, $possiblePartner['naksatra'] . ', ' . $possiblePartner['pada'], $naksatraNames)
+            && isSameNaksatras($chartData->boy, $person['naksatra'] . ', ' . $person['pada'], $naksatraNames)
           ) {
-            $possiblePartners[$i]['points'] = $chartData->point;
+            $possiblePartners[$i]['points'] = (float)$chartData->point;
           }
         }
 
         $personMoonPosition = array_search($person['moon'], $zodiacs);
         $possiblePartnerMoonPosition = array_search($possiblePartner['moon'], $zodiacs);
+
         // female - male
         if ($selectedPersonSex == 'girl') {
           $moonPositionDifference = $personMoonPosition - $possiblePartnerMoonPosition;
@@ -119,9 +120,13 @@ if ($isAuthenticated) {
         if ($selectedPersonSex == 'boy') {
           $moonPositionDifference =  $possiblePartnerMoonPosition - $personMoonPosition;
         }
+
+        // rashi
         // male - female
         $possiblePartners[$i]['rashi'] = -$moonPositionDifference;
-        $possiblePartners[$i]['stridirgha'] = $moonPositionDifference > 0 ? $moonPositionDifference : 12 + $moonPositionDifference;
+
+        // TODO now we calculate on client side, get it back to server side #9
+        $possiblePartners[$i]['stridirgha'] = 'TODO #9';
       }
     }
 

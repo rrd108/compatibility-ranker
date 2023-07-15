@@ -1,15 +1,12 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import axios from 'axios'
+  import { useStore } from '@/store'
 
   const error = ref()
   const user = ref()
   const password = ref()
-
-  // 3.3+: alternative, more succinct syntax
-  const emit = defineEmits<{
-    tokenReceived: [token: string]
-  }>()
+  const store = useStore()
 
   const login = () => {
     error.value = null
@@ -23,7 +20,7 @@
           error.value = response.data.error
           return
         }
-        emit('tokenReceived', response.data)
+        store.token = response.data
       })
       .catch(error => (error.value = error))
   }
