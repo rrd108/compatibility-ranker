@@ -94,6 +94,9 @@
     text-align: center;
     font-size: 0.75rem;
   }
+  li.outRange {
+    background-color: #d64933;
+  }
   h6 {
     font-size: 10rem;
     font-weight: normal;
