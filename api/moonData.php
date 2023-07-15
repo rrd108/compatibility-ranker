@@ -123,7 +123,7 @@ if ($isAuthenticated) {
   }
 
   if (is_numeric($_GET['moonData'])) {
-    $stmt = $pdo->prepare("SELECT id, name, sex, birth_date, birth_time, birth_place, naksatra, moon
+    $stmt = $pdo->prepare("SELECT id, name, sex, birth_date, birth_time, birth_place, naksatra, pada, moon
       FROM devs
       WHERE id = ?");
     $stmt->execute([$_GET['moonData']]);

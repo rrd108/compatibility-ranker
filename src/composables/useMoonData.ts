@@ -24,7 +24,8 @@ const moonData = (person: PersonMoonData) => {
             import.meta.env.VITE_APP_API_URL,
             {
               id: person.id,
-              naksatra: person.naksatra,
+              naksatra: person.naksatra.split(',')[0],
+              pada: person.naksatra.split(',')[1],
               moon: person.moon,
             },
             { headers: { Authorization: `ApiKey ${store.token}` } }

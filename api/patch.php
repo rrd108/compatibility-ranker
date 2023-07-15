@@ -9,7 +9,7 @@ if ($isAuthenticated) {
   }
 
   if ($data['naksatra']) {
-    $stmt = $pdo->prepare("UPDATE devs SET naksatra = :naksatra, moon = :moon WHERE id = :id");
+    $stmt = $pdo->prepare("UPDATE devs SET naksatra = :naksatra, pada=:pada, moon = :moon WHERE id = :id");
   }
 
   $result = $stmt->execute($data);
