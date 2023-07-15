@@ -30,6 +30,9 @@
     }
     return true
   }
+
+  const isLowCompatibility = (compatibility: number) =>
+    compatibility < store.maxPoints * 0.4
 </script>
 
 <template>
@@ -61,7 +64,7 @@
     </h4>
 
     <ul>
-      <li>
+      <li :class="{ outRange: isLowCompatibility(partner.points) }">
         <h6>{{ Math.floor((partner.points / store.maxPoints) * 100) }}%</h6>
         ({{ partner.points }} points)
       </li>
