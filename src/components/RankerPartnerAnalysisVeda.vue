@@ -17,12 +17,12 @@
 </script>
 
 <template>
-  <div v-if="partner" :class="veda(partner.naksatra) ? 'outRange' : 'inRange'">
-    <h5
-      title="A Veda a házastárs személyiségét és temperamentumát tükrözi. (Nincs kivétel)"
-    >
-      Veda
-    </h5>
+  <div
+    v-if="partner"
+    :class="veda(partner.naksatra) ? 'outRange' : 'inRange'"
+    title="A Veda a házastárs személyiségét és temperamentumát tükrözi. (Nincs kivétel)"
+  >
+    <h5>Veda</h5>
 
     {{ getIcon(store.targetPerson.sex) }} {{ store.targetPerson.naksatra }}
     <br />

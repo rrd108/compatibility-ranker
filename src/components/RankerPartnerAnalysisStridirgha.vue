@@ -39,12 +39,12 @@
 </script>
 
 <template>
-  <div v-if="partner" :class="acceptable ? 'inRange' : 'outRange'">
-    <h5
-      title="A Stridirgha azt mutatja, hogy a férfi energia mennyire tud áramolni a nő felé."
-    >
-      Stridirgha
-    </h5>
+  <div
+    v-if="partner"
+    :class="acceptable ? 'inRange' : 'outRange'"
+    title="A Stridirgha azt mutatja, hogy a férfi energia mennyire tud áramolni a nő felé."
+  >
+    <h5>Stridirgha</h5>
 
     {{ getIcon(store.targetPerson.sex) }}
     {{ store.targetPerson.naksatra }}

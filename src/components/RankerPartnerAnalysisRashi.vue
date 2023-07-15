@@ -26,10 +26,9 @@
       { inRange: !partner.rashi || partner.rashi == 6 },
       { nice: partner.rashi < 0 }, // TODO is it like this?
     ]"
+    title="A Rasi a házastárs karrierjét és anyagi helyzetét tükrözi"
   >
-    <h5 title="A Rasi a házastárs karrierjét és anyagi helyzetét tükrözi">
-      TODO Rashi
-    </h5>
+    <h5>TODO Rashi</h5>
 
     {{ getIcon(store.targetPerson.sex) }}
     {{ store.targetPerson.moon }}
