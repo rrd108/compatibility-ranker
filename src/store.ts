@@ -91,6 +91,7 @@ export const useStore = defineStore('cR', {
       { area: 'nyak', effect: 'feleség halála', icon: 'female' },
       { area: 'fej', effect: 'férj halála', icon: 'male' },
     ],
+    rasi: [{}],
     targetPerson: {} as PersonMoonData,
     token: '',
     vedas: {

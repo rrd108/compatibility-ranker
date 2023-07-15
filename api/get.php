@@ -112,6 +112,7 @@ if ($isAuthenticated) {
 
         $personMoonPosition = array_search($person['moon'], $zodiacs);
         $possiblePartnerMoonPosition = array_search($possiblePartner['moon'], $zodiacs);
+
         // female - male
         if ($selectedPersonSex == 'girl') {
           $moonPositionDifference = $personMoonPosition - $possiblePartnerMoonPosition;
@@ -119,6 +120,8 @@ if ($isAuthenticated) {
         if ($selectedPersonSex == 'boy') {
           $moonPositionDifference =  $possiblePartnerMoonPosition - $personMoonPosition;
         }
+
+        // rashi
         // male - female
         $possiblePartners[$i]['rashi'] = -$moonPositionDifference;
 

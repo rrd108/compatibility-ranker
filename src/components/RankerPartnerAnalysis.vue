@@ -15,8 +15,8 @@
   <div v-if="partner" class="analysis">
     <RankerPartnerAnalysisVeda :partner="partner" />
     <RankerPartnerAnalysisStridirgha :partner="partner" />
-    <RankerPartnerAnalysisRashi :partner="partner" />
     <RankerPartnerAnalysisRajju :partner="partner" />
+    <RankerPartnerAnalysisRashi :partner="partner" />
   </div>
 </template>
 
