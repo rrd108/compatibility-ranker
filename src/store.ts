@@ -20,7 +20,7 @@ interface State {
 export const useStore = defineStore('cR', {
   state: (): State => ({
     loading: false,
-    maxPoints: 35,
+    maxPoints: 36,
     naksatras: [
       'Ashwini',
       'Bharani',

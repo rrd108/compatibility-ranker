@@ -14,22 +14,28 @@
 
   // TODO move back to server side #9
   const naksatraDistanceForStridirgha = 14
-  const naksatraDistance = (partnerNaksatra: Naksatra) => {
-    const manNaksatraPosition = store.naksatras.findIndex(naksatra =>
+  const manNaksatraPosition = (partnerNaksatra: Naksatra) =>
+    store.naksatras.findIndex(naksatra =>
       isMale(store.targetPerson.sex)
         ? naksatra == store.targetPerson.naksatra
         : naksatra == partnerNaksatra
     )
-    const womanNaksatraPosition = store.naksatras.findIndex(naksatra =>
+
+  const womanNaksatraPosition = (partnerNaksatra: Naksatra) =>
+    store.naksatras.findIndex(naksatra =>
       isMale(store.targetPerson.sex)
         ? naksatra == partnerNaksatra
         : naksatra == store.targetPerson.naksatra
     )
-    if (manNaksatraPosition == -1 || womanNaksatraPosition == -1) return -1
 
-    return womanNaksatraPosition >= manNaksatraPosition
-      ? womanNaksatraPosition - manNaksatraPosition
-      : store.naksatras.length - manNaksatraPosition + womanNaksatraPosition
+  const naksatraDistance = (partnerNaksatra: Naksatra) => {
+    const manNaksatraPos = manNaksatraPosition(partnerNaksatra)
+    const womanNaksatraPos = womanNaksatraPosition(partnerNaksatra)
+    if (manNaksatraPos == -1 || womanNaksatraPos == -1) return -1
+
+    return womanNaksatraPos >= manNaksatraPos
+      ? store.naksatras.length - (womanNaksatraPos - manNaksatraPos)
+      : manNaksatraPos - womanNaksatraPos
   }
 
   const acceptable = computed(
@@ -48,8 +54,18 @@
 
     {{ getIcon(store.targetPerson.sex) }}
     {{ store.targetPerson.naksatra }}
+    {{
+      isMale(store.targetPerson.sex)
+        ? manNaksatraPosition(store.targetPerson.naksatra)
+        : womanNaksatraPosition(store.targetPerson.naksatra)
+    }}
     <br />
     {{ getIcon(partner.sex) }} {{ partner.naksatra }}
+    {{
+      isMale(store.targetPerson.sex)
+        ? womanNaksatraPosition(partner.naksatra)
+        : manNaksatraPosition(partner.naksatra)
+    }}
 
     <span
       :title="`Az értéknek legalább ${naksatraDistanceForStridirgha}-nek kell lennie, minél nagyobb annál jobb`"
